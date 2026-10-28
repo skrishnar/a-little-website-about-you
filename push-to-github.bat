@@ -1,66 +1,46 @@
 @echo off
 chcp 65001 >nul
 echo ========================================================
-echo   💌 Push "A Little Website About You" to GitHub
+echo   💌 Pushing to GitHub: skrishnar/a-little-website-about-you
 echo ========================================================
 echo.
 
 cd /d "%~dp0"
 
-echo [1/3] Staging all files...
+echo [1/3] Adding any new changes...
 git add .
 
-echo [2/3] Checking commit status...
+echo [2/3] Checking git commit...
 git commit -m "Update A Little Website About You" 2>nul
 if errorlevel 1 (
-    echo Everything is already up to date!
+    echo Current commit is ready!
 ) else (
-    echo New changes committed successfully!
+    echo New changes committed!
 )
 
 git branch -M main
 
-git remote get-url origin 2>nul
-if errorlevel 1 (
-    echo.
-    echo --------------------------------------------------------
-    echo Please create a new repository on GitHub:
-    echo 1. Go to https://github.com/new
-    echo 2. Repository name: a-little-website-about-you
-    echo 3. Choose Public or Private
-    echo 4. Leave "Add README" UNCHECKED
-    echo 5. Click "Create repository"
-    echo --------------------------------------------------------
-    echo.
-    set /p REPO_URL="Paste your GitHub repository URL (e.g. https://github.com/username/repo.git): "
-    if not defined REPO_URL (
-        echo No URL provided. Aborting.
-        pause
-        exit /b 1
-    )
-    git remote add origin %REPO_URL%
-)
-
-echo.
-echo [3/3] Pushing to GitHub (main branch)...
+echo [3/3] Pushing to GitHub...
 git push -u origin main
 
-if errorlevel 0 (
+if %errorlevel% equ 0 (
     echo.
     echo ========================================================
-    echo   🎉 SUCCESS! Pushed to GitHub!
+    echo   🎉 SUCCESS! Code pushed to GitHub!
     echo ========================================================
     echo.
-    echo To view your live website on GitHub Pages:
-    echo 1. Open your repository on GitHub.
-    echo 2. Go to Settings -^> Pages.
-    echo 3. Under Build and deployment:
-    echo    Source: Choose "GitHub Actions" (or "Deploy from a branch" -^> main).
-    echo 4. Your live link will appear at the top in 1-2 minutes!
+    echo To activate your live link on GitHub Pages:
+    echo 1. Open: https://github.com/skrishnar/a-little-website-about-you/settings/pages
+    echo 2. Under "Build and deployment", set Source to:
+    echo    "GitHub Actions"
+    echo.
+    echo In ~60 seconds, your site will be live at:
+    echo https://skrishnar.github.io/a-little-website-about-you/
+    echo ========================================================
     echo.
 ) else (
     echo.
-    echo [!] Push encountered an issue. Please make sure you are signed in to GitHub.
+    echo If GitHub asked you to sign in, complete the login in your browser and run this again.
     echo.
 )
 
