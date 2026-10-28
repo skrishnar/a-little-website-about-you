@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Little Website About You 💌</title>
+  <meta name="description" content="An interactive, playful, romantic story and confession website.">
+
+  <!-- Favicon Emoji -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💌</text></svg>">
+
+  <!-- Google Fonts: Playful handwriting (Caveat, Patrick Hand) & Modern readable sans (Outfit, Nunito) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Ambient Floating Canvas (Hearts, Twinkles, Confetti) -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- =========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================= -->
+  <header class="top-nav" role="banner">
+    <div class="nav-left">
+      <button class="brand-badge" id="btn-home" aria-label="Go to start of adventure">
+        <span>💌</span>
+        <span>A Little Adventure</span>
+      </button>
+      <div class="progress-pill" id="nav-progress-pill" aria-label="Current chapter progress">
+        <span class="subtle-label">Progress:</span>
+        <span id="nav-progress-text">A little adventure · 1 of 8</span>
+        <div class="progress-bar-container" aria-hidden="true">
+          <div class="progress-bar-fill" id="nav-progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-controls" role="toolbar" aria-label="Site settings and audio controls">
+      <button class="icon-btn" id="btn-music-toggle" title="Play gentle background music" aria-label="Toggle background music">
+        <span>🔇</span>
+      </button>
+      <button class="icon-btn active" id="btn-sfx-toggle" title="Toggle sound effects" aria-label="Toggle sound effects">
+        <span>🔔</span>
+      </button>
+      <button class="icon-btn" id="btn-motion-toggle" title="Toggle reduced motion" aria-label="Toggle reduced animations">
+        <span>✨</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN CONTENT CONTAINER
+       ========================================================================= -->
+  <main class="main-container" role="main">
+
+    <!-- -----------------------------------------------------------------------
+         CHAPTER 1: THE WELCOME SCREEN (A Tiny Surprise)
+         ----------------------------------------------------------------------- -->
+    <section class="chapter-section active" id="chapter-1" aria-labelledby="welcome-greeting">
+      <div class="story-card welcome-hero">
+        <div class="welcome-badge">
+          <span>✨</span>
+          <span>A little secret just for you</span>
+          <span>✨</span>
+        </div>
+
+        <h1 class="welcome-title" id="welcome-greeting">Hi, [CRUSH'S NAME] 🫣💗</h1>
+        <p class="welcome-sub" id="welcome-sub">Okay... so I made a little something for you.</p>
+
+        <!-- 3D Interactive Envelope -->
+        <div class="envelope-box" id="welcome-envelope-box" role="button" tabindex="0" aria-label="Open the secret envelope">
+          <div class="envelope-flap"></div>
+          <div class="envelope-seal">💌</div>
+          <div class="envelope-inner-card">
+            <span style="font-size: 2rem;">🎉</span>
+            <span style="font-family: var(--font-hand); font-size: 1.4rem; color: var(--color-rose-dark); font-weight: 700;">A secret message!</span>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btn-open-envelope">
+          <span>Open it? 👀</span>
+        </button>
+
+        <!-- Unfolded Envelope Stage -->
+        <div class="welcome-reveal" id="welcome-reveal">
+          <h3>First of all, congratulations! 🥳</h3>
+          <p>You have officially been selected for a very unnecessary but surprisingly important little adventure. 😂💌</p>
+
+          <p class="welcome-prompt">Ready to find out what this is about?</p>
+
+          <div class="choice-buttons-grid">
+            <button class="btn-secondary" id="btn-choice-a">
+              <span>Okay, let's go! ✨</span>
+            </button>
+            <button class="btn-secondary" id="btn-choice-b">
+              <span>Wait, should I be concerned? 😂</span>
+            </button>
+          </div>
+
+          <div class="micro-feedback-box" id="welcome-micro-feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         CHAPTER 2: DIGITAL DIARY (Before We Begin)
+         ----------------------------------------------------------------------- -->
+    <section class="chapter-section" id="chapter-2" aria-labelledby="diary-heading">
+      <div class="diary-container">
+        <div class="diary-spine-tape"></div>
+
+        <div class="diary-header">
+          <h2 class="section-title" id="diary-heading" style="text-align: left; margin-bottom: 0;">Before you judge me, hear me out. 🙈</h2>
+          <span class="diary-date" id="diary-date-tag">A quiet evening 🌙</span>
+        </div>
+
+        <!-- Sequentially revealed diary entries -->
+        <div class="diary-lines-list" id="diary-lines-list"></div>
+
+        <!-- Decorative stickers -->
+        <div class="diary-stickers-row" id="diary-stickers-row"></div>
+
+        <div style="text-align: center; margin-top: 20px;">
+          <button class="btn-primary" id="btn-diary-next">
+            <span>Okay, now I'm curious... ✨</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         CHAPTER 3: THE BEGINNING (Milestone Timeline)
+         ----------------------------------------------------------------------- -->
+    <section class="chapter-section" id="chapter-3" aria-labelledby="timeline-heading">
+      <div class="story-card">
+        <h2 class="section-title" id="timeline-heading">Chapter 1: It Started Somewhere... 🌱</h2>
+        <p class="section-subtitle" id="timeline-subtitle">A few moments along the way that felt a little bigger than they seemed at the time. (Click any card to peek inside!)</p>
+
+        <div class="timeline-wrapper">
+          <div class="timeline-stem" aria-hidden="true"></div>
+          <div class="timeline-items-list" id="timeline-items-list"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <button class="btn-primary" id="btn-timeline-next">
+            <span>Explore our story map 🗺️✨</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         CHAPTER 4: THE INTERACTIVE JOURNEY MAP
+         ----------------------------------------------------------------------- -->
+    <section class="chapter-section" id="chapter-4" aria-labelledby="map-heading">
+      <div class="story-card">
+        <h2 class="section-title" id="map-heading">The Little Adventure Map 🗺️💞</h2>
+        <p class="section-subtitle" id="map-subtitle">Click each landmark along our winding path to unlock the memories. Watch our little traveler make their way across!</p>
+
+        <!-- Interactive Map Board -->
+        <div class="map-canvas-container" id="map-interactive-board">
+          <!-- Winding Path SVG -->
+          <svg class="map-svg-board" viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#E88BA6" />
+                <stop offset="50%" stop-color="#C96684" />
+                <stop offset="100%" stop-color="#8E5280" />
+              </linearGradient>
+            </defs>
+
+            <!-- Illustrated whimsical landscape elements -->
+            <!-- Trees, hills, clouds -->
+            <path d="M 40,430 Q 120,380 200,430 Z" fill="#E8F8EE" opacity="0.6"/>
+            <path d="M 320,440 Q 420,390 520,440 Z" fill="#E8F8EE" opacity="0.6"/>
+            <path d="M 580,240 Q 660,180 740,240 Z" fill="#F0EBFF" opacity="0.7"/>
+
+            <!-- Fluffy Clouds -->
+            <path d="M 80,90 Q 95,70 120,80 Q 140,65 160,85 Q 175,95 165,110 Q 130,120 90,110 Z" fill="#FFFFFF" opacity="0.8"/>
+            <path d="M 640,60 Q 655,45 675,55 Q 690,40 710,58 Q 725,70 715,82 Q 680,92 650,80 Z" fill="#FFFFFF" opacity="0.8"/>
+
+            <!-- Winding Dotted Path Track -->
+            <path class="map-path-track" id="map-path" d="M 100,390 C 130,300 180,240 250,220 C 330,200 360,370 420,340 C 480,310 520,170 580,160 C 640,150 670,250 710,300" />
+          </svg>
+
+          <!-- Landmarks, Traveler avatar, and Easter eggs are dynamically rendered here via app.js -->
+        </div>
+
+        <div style="text-align: center; margin-top: 10px;">
+          <button class="btn-primary" id="btn-map-next">
+            <span>Take the quiz 🕵️‍♀️💗</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         CHAPTER 5: THE CRUSH QUIZ (A Very Serious Investigation)
+         ----------------------------------------------------------------------- -->
+    <section class="chapter-section" id="chapter-5" aria-labelledby="quiz-heading">
+      <div class="story-card">
+        <h2 class="section-title" id="quiz-heading">Time for a very serious investigation. 🕵️‍♀️💗</h2>
+        <p class="section-subtitle" id="quiz-subtitle">I have a few extremely important questions. Please answer responsibly. (I am absolutely not going to overthink your answers.) 😂</p>
+
+        <div class="quiz-box">
+          <!-- Question progress dots -->
+          <div class="quiz-progress-dots" id="quiz-dots-container"></div>
+
+          <!-- Dynamic Question Area -->
+          <div id="quiz-dynamic-area"></div>
+
+          <!-- Funny micro response box -->
+          <div class="quiz-feedback-box" id="quiz-feedback-box"></div>
+
+          <!-- Completion state -->
+          <div id="quiz-completed-area" style="display: none; text-align: center; padding: 20px 0;">
+            <div style="font-size: 3.5rem; margin-bottom: 12px;">🎉📝</div>
+            <h3 style="font-family: var(--font-hand); font-size: 2.2rem; color: var(--color-plum); margin-bottom: 12px;">Investigation Complete!</h3>
+            <p style="font-size: 1.15rem; color: var(--color-plum-light); margin-bottom: 24px;">Thank you for participating in this completely unscientific investigation. 😂💗</p>
+            <button class="btn-primary" id="btn-quiz-next">
+              <span>Okay, what's next? ✨</span>
+            </button>
+          </div>
+
+          <!-- Skip button -->
+          <div style="text-align: center; margin-top: 24px;">
+            <button class="btn-ghost" id="btn-quiz-skip">
+              <span>Skip directly to the story 🏃‍♀️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         CHAPTER 6: THE PRESENT (Little Things I Shouldn't Remember, But Do)
+         ----------------------------------------------------------------------- -->
+    <section class="chapter-section" id="chapter-6" aria-labelledby="present-heading">
+      <div class="story-card">
+        <h2 class="section-title" id="present-heading">And Here We Are... 🌻</h2>
+        <p class="section-subtitle" id="present-subtitle">Little Things I Probably Shouldn't Remember, But Do</p>
+
+        <!-- 3D Flip Memory Cards Grid -->
+        <div class="memory-cards-grid" id="memory-cards-grid"></div>
+
+        <!-- Warm Reflection Box -->
+        <div class="reflection-box">
+          <p class="reflection-quote" id="present-reflection-quote">
+            "I don't think every meaningful thing begins with a big moment. Sometimes it's just the random conversations, the little jokes, the comfort of talking, and realizing that someone has slowly become a person you look forward to hearing from."
+          </p>
+          <span style="font-size: 0.95rem; color: var(--color-rose-dark); font-weight: 600;">— A quiet thought 🌸</span>
+        </div>
+
+        <div style="text-align: center;">
+          <button class="btn-primary" id="btn-present-next">
+            <span>The letter I've been writing... 💌</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         CHAPTER 7: THE LETTER (What I Have Been Wanting to Say)
+         ----------------------------------------------------------------------- -->
+    <section class="chapter-section" id="chapter-7" aria-labelledby="letter-heading">
+      <div class="letter-section-wrapper">
+        <div class="story-card">
+          <h2 class="section-title" id="letter-heading">Okay... jokes aside for a second. 🥹</h2>
+
+          <!-- Envelope opener -->
+          <div class="letter-envelope-hero" id="letter-envelope-hero">
+            <div style="font-size: 4rem; margin-bottom: 12px; animation: popIn 0.8s ease;">💌</div>
+            <p style="font-size: 1.15rem; color: var(--color-plum-light); margin-bottom: 24px;">I wrote down what I've been wanting to say. Take your time reading it.</p>
+            <button class="btn-primary pulsing" id="btn-open-letter">
+              <span>Open the letter 💌</span>
+            </button>
+          </div>
+
+          <!-- Unfolded Handwritten Parchment Sheet -->
+          <div class="parchment-sheet" id="letter-parchment">
+            <div class="parchment-stamp" aria-hidden="true">
+              <span>💌</span>
+              <span style="font-size: 0.65rem; font-weight: 700;">AIR MAIL</span>
+            </div>
+
+            <div class="letter-paragraphs-list" id="letter-paragraphs-list"></div>
+
+            <div class="letter-sign-off">
+              <p class="letter-closing-text" id="letter-closing-text">From someone who spent an unreasonable amount of time figuring out how to say a simple thing. ❤️</p>
+              <div class="letter-signature" id="letter-signature">[MY NAME OR NICKNAME]</div>
+            </div>
+
+            <div class="letter-actions-row">
+              <button class="btn-secondary" id="btn-letter-reread">
+                <span>Read that again 🥹</span>
+              </button>
+              <button class="btn-primary" id="btn-letter-next">
+                <span>Your turn, maybe? 🫶</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         CHAPTER 8: THEIR TURN (No Pressure, Just Honesty)
+         ----------------------------------------------------------------------- -->
+    <section class="chapter-section" id="chapter-8" aria-labelledby="their-turn-heading">
+      <div class="story-card their-turn-hero">
+        <h2 class="section-title" id="their-turn-heading">Okay, I've said my piece. Your turn, maybe? 💗</h2>
+
+        <p class="their-turn-intro" id="their-turn-intro">
+          I know that was a lot of website for one little confession. 😂
+
+          You don't have to figure everything out right now. I just wanted to tell you how I feel, and I'd rather hear what you genuinely think than have you feel like you need to give me a particular answer.
+        </p>
+
+        <!-- 3 Interactive Response Cards -->
+        <div class="response-cards-grid" id="response-cards-grid"></div>
+
+        <!-- Selection reveal card -->
+        <div class="response-reveal-card" id="response-reveal-card">
+          <h3 class="response-reveal-title" id="response-reveal-title"></h3>
+          <p class="response-reveal-sub" id="response-reveal-sub"></p>
+        </div>
+
+        <!-- Navigation options -->
+        <div class="ending-nav-links">
+          <button class="btn-secondary" id="btn-revisit-letter">
+            <span>Re-read the letter 💌</span>
+          </button>
+          <button class="btn-secondary" id="btn-revisit-map">
+            <span>Explore the map again 🗺️</span>
+          </button>
+          <button class="btn-ghost" id="btn-restart-experience">
+            <span>Start from the beginning 🔄</span>
+          </button>
+        </div>
+
+        <footer class="ending-footer">
+          <p id="their-turn-footer-msg">Made with a little courage, several overthought decisions, and a whole lot of heart. ❤️</p>
+        </footer>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       POPUP MODAL (For Landmark & Milestone Details)
+       ========================================================================= -->
+  <div class="modal-overlay" id="app-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Close dialog">✕</button>
+
+      <div class="modal-header-icon" id="modal-icon">🌸</div>
+      <h3 class="modal-title" id="modal-title">Landmark Title</h3>
+      <div class="modal-subtitle" id="modal-subtitle">Landmark Subtitle</div>
+
+      <!-- Optional Polaroid Frame -->
+      <div class="polaroid-frame" id="modal-polaroid" style="display: none;">
+        <div class="polaroid-img-box">
+          <img id="modal-polaroid-img" src="" alt="Memory photograph" />
+        </div>
+        <div class="polaroid-caption" id="modal-polaroid-caption">A sweet memory</div>
+      </div>
+
+      <div class="modal-body-text" id="modal-body" style="white-space: pre-line;"></div>
+
+      <div class="modal-thought-box" id="modal-thought"></div>
+
+      <div style="text-align: center; margin-top: 10px;">
+        <button class="btn-secondary" onclick="document.getElementById('modal-close-btn').click();">
+          <span>Close memory 🌸</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       EASTER EGG TOAST NOTIFICATION
+       ========================================================================= -->
+  <div class="easter-egg-toast" id="easter-egg-toast" role="status" aria-live="polite">
+    <span style="font-size: 1.4rem;">✨</span>
+    <span id="toast-message">Secret message unlocked!</span>
+  </div>
+
+  <!-- Scripts: Config -> Audio -> Particles -> App -->
+  <script src="js/storyConfig.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
