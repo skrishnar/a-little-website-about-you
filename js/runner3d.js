@@ -2,17 +2,14 @@
  * ==============================================================================
  * 🏃‍♂️ 3D BOY LETTER RUNNER — THREE.JS CINEMATIC OPENING ENGINE
  * ==============================================================================
- * A fully self-contained 3D cartoon boy delivery scene with support for:
- * 1. Image Mode: Uses the cute hand-drawn boy character illustration!
- * 2. 3D Rigged Mode: Procedural 3D anime character.
- *
- * Choreography:
- * 1. Approach: Boy runs from distant sunset horizon towards the screen.
- * 2. Offering: Stops close-up, catches breath, blushes, extends glowing letter.
- * 3. Drop: Hands slip! Letter flutters and falls forward onto the screen glass.
- * 4. Panic Run: Boy gets flustered, covers face, spins 180°, sprints away!
- * 5. Interactive Letter: Dropped letter hovers in foreground with 3D mouse parallax.
- * 6. Reveal: Clicking letter pops wax seal with confetti, unfolds into the website!
+ * A fully articulated 3D character modeled directly after the user's hand-drawn
+ * anime boy illustration:
+ * - Fluffy messy black hair with sculpted locks
+ * - Adorable vertical capsule/dot eyes and soft pastel blush
+ * - Open dark navy cardigan/jacket over crisp white collared shirt
+ * - Black rounded backpack with straps
+ * - Loose dark trousers and chunky white sneakers
+ * - Full 3D skeletal movement (stride, knee flexion, arm extension, 180° turn, sprint!)
  * ==============================================================================
  */
 
@@ -138,7 +135,7 @@
     // Check Three.js availability
     if (typeof THREE === 'undefined') {
       threeLoadAttempts++;
-      if (threeLoadAttempts < 12) {
+      if (threeLoadAttempts < 14) {
         setTimeout(initRunner, 250);
         return;
       } else {
@@ -147,7 +144,7 @@
       }
     }
 
-    // Initialize raycaster and vectors once Three is loaded
+    // Initialize raycaster and vectors
     raycaster = new THREE.Raycaster();
     mouseVec = new THREE.Vector2();
 
@@ -160,7 +157,7 @@
   }
 
   /**
-   * Offline / Low-End Fallback
+   * Offline Fallback
    */
   function activateOfflineFallback() {
     Runner3D.isActive = true;
@@ -181,18 +178,17 @@
         ctx.fillStyle = '#FED9E2';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw image if available
         const img = new Image();
         img.src = 'assets/runner-boy.jpg';
         img.onload = () => {
-          const sz = Math.min(canvas.width * 0.4, 280);
+          const sz = Math.min(canvas.width * 0.45, 300);
           ctx.drawImage(img, (canvas.width - sz) / 2, (canvas.height - sz) / 2 - 40, sz, sz);
         };
 
         ctx.textAlign = 'center';
         ctx.font = '22px Outfit, sans-serif';
         ctx.fillStyle = '#433248';
-        ctx.fillText("He dropped the letter and ran away! 💌", canvas.width / 2, canvas.height / 2 + 130);
+        ctx.fillText("He dropped the letter and ran away! 💌", canvas.width / 2, canvas.height / 2 + 140);
       }
     }
   }
@@ -223,7 +219,7 @@
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
 
     clock = new THREE.Clock();
 
@@ -245,14 +241,13 @@
     sunLight.shadow.bias = -0.0005;
     scene.add(sunLight);
 
-    // Soft pink-lavender rim light
     const rimLight = new THREE.DirectionalLight(0xE6CCFF, 0.5);
     rimLight.position.set(6, 4, -10);
     scene.add(rimLight);
 
     // Build Scene Elements
     buildEnvironment();
-    buildBoyCharacter();
+    buildBoyCharacter3D();
     buildLetterObject();
     buildPetalParticles();
     buildDustParticles();
@@ -313,7 +308,7 @@
     rightGrass.receiveShadow = true;
     environment.add(rightGrass);
 
-    // Stylized Warm Lantern Lamp Posts along the avenue
+    // Warm Lantern Lamp Posts
     const lampZPositions = [-2, -14, -26, -38, -50, -62];
     const lampMat = new THREE.MeshStandardMaterial({ color: 0x4A3B4E, roughness: 0.6 });
     const glassMat = new THREE.MeshStandardMaterial({
@@ -328,26 +323,22 @@
         const lamp = new THREE.Group();
         lamp.position.set(x, 0, z);
 
-        // Pole
         const poleGeo = new THREE.CylinderGeometry(0.06, 0.08, 3.2, 8);
         const pole = new THREE.Mesh(poleGeo, lampMat);
         pole.position.y = 1.6;
         pole.castShadow = true;
         lamp.add(pole);
 
-        // Arm bracket pointing towards path
         const armGeo = new THREE.BoxGeometry(x < 0 ? 0.35 : -0.35, 0.05, 0.05);
         const arm = new THREE.Mesh(armGeo, lampMat);
         arm.position.set(x < 0 ? 0.15 : -0.15, 3.1, 0);
         lamp.add(arm);
 
-        // Lantern head
         const lanternGeo = new THREE.CylinderGeometry(0.18, 0.12, 0.35, 6);
         const lantern = new THREE.Mesh(lanternGeo, glassMat);
         lantern.position.set(x < 0 ? 0.32 : -0.32, 2.9, 0);
         lamp.add(lantern);
 
-        // Warm local point light
         const lampLight = new THREE.PointLight(0xFFD176, 0.8, 8, 2);
         lampLight.position.set(x < 0 ? 0.32 : -0.32, 2.9, 0);
         lamp.add(lampLight);
@@ -356,7 +347,7 @@
       });
     });
 
-    // Stylized Cherry Blossom Trees along the avenue
+    // Cherry Blossom Trees
     const treeZPositions = [-6, -18, -30, -42, -54, -66];
     const trunkMat = new THREE.MeshStandardMaterial({ color: 0x6E5042, roughness: 0.9 });
     const blossomColors = [0xFFB7CE, 0xFFCAD4, 0xF4AEC5, 0xFFCCD5];
@@ -366,20 +357,15 @@
         const tree = new THREE.Group();
         tree.position.set(x + (Math.sin(z) * 0.4), 0, z);
 
-        // Trunk
         const trunkGeo = new THREE.CylinderGeometry(0.2, 0.32, 3.5, 8);
         const trunk = new THREE.Mesh(trunkGeo, trunkMat);
         trunk.position.y = 1.75;
         trunk.castShadow = true;
         tree.add(trunk);
 
-        // Foliage cloud clusters
         for (let j = 0; j < 4; j++) {
           const foliageColor = blossomColors[(i + j) % blossomColors.length];
-          const folMat = new THREE.MeshStandardMaterial({
-            color: foliageColor,
-            roughness: 0.8
-          });
+          const folMat = new THREE.MeshStandardMaterial({ color: foliageColor, roughness: 0.8 });
           const folGeo = new THREE.SphereGeometry(1.0 + (j * 0.15), 8, 8);
           const folMesh = new THREE.Mesh(folGeo, folMat);
           folMesh.position.set(
@@ -399,11 +385,31 @@
   }
 
   /**
-   * Build Boy Character (Supports User's Hand-drawn Image or Procedural 3D Model)
+   * Build Fully Articulated 3D Character Modeled Directly After the Hand-Drawn Boy
    */
-  function buildBoyCharacter() {
-    const runnerConfig = window.STORY_CONFIG?.runner3d || {};
-    const mode = runnerConfig.characterMode || 'image';
+  function buildBoyCharacter3D() {
+    // Exact colors from the user's illustration
+    const skinCol = '#FCE2D6';      // Warm pastel peach
+    const hairCol = '#232126';      // Messy charcoal black
+    const jacketCol = '#2C3E55';    // Dark navy blue open cardigan
+    const shirtCol = '#F8F9FA';     // White inner collared shirt
+    const pantsCol = '#212124';     // Dark black/charcoal trousers
+    const backpackCol = '#1E1E24';  // Black rounded backpack
+    const shoeSoleCol = '#FFFFFF';  // White sneaker sole
+    const shoeBodyCol = '#26262B';  // Black shoe body
+
+    // Materials with pastel/chalk texture vibe (soft roughness)
+    const skinMat = new THREE.MeshStandardMaterial({ color: skinCol, roughness: 0.7 });
+    const hairMat = new THREE.MeshStandardMaterial({ color: hairCol, roughness: 0.85 });
+    const jacketMat = new THREE.MeshStandardMaterial({ color: jacketCol, roughness: 0.75 });
+    const shirtMat = new THREE.MeshStandardMaterial({ color: shirtCol, roughness: 0.6 });
+    const pantsMat = new THREE.MeshStandardMaterial({ color: pantsCol, roughness: 0.8 });
+    const backpackMat = new THREE.MeshStandardMaterial({ color: backpackCol, roughness: 0.7 });
+    const shoeSoleMat = new THREE.MeshStandardMaterial({ color: shoeSoleCol, roughness: 0.45 });
+    const shoeBodyMat = new THREE.MeshStandardMaterial({ color: shoeBodyCol, roughness: 0.6 });
+    const eyeMat = new THREE.MeshStandardMaterial({ color: 0x141416, roughness: 0.2 });
+    const blushMat = new THREE.MeshBasicMaterial({ color: 0xFFAAA6, transparent: true, opacity: 0.65 });
+    const sweatMat = new THREE.MeshStandardMaterial({ color: 0x74B9FF, roughness: 0.1, transparent: true, opacity: 0.85 });
 
     // Root Group
     const root = new THREE.Group();
@@ -421,108 +427,86 @@
     shadowBlob.position.y = 0.02;
     root.add(shadowBlob);
 
-    // =========================================================================
-    // MODE 1: IMAGE RUNNER (Uses the User's Hand-drawn Boy Illustration)
-    // =========================================================================
-    if (mode === 'image') {
-      const textureLoader = new THREE.TextureLoader();
-      const imageSrc = runnerConfig.characterImage || 'assets/runner-boy-cutout.png';
-
-      // Load texture with fallback
-      const boyTexture = textureLoader.load(imageSrc, (tex) => {
-        tex.encoding = THREE.sRGBEncoding;
-      }, undefined, () => {
-        textureLoader.load('assets/runner-boy.jpg', (fallbackTex) => {
-          fallbackTex.encoding = THREE.sRGBEncoding;
-          spriteMesh.material.map = fallbackTex;
-          spriteMesh.material.needsUpdate = true;
-        });
-      });
-
-      // Aspect ratio of the boy illustration (width: 2.05, height: 3.32)
-      const spriteGeo = new THREE.PlaneGeometry(2.05, 3.32);
-      const spriteMat = new THREE.MeshStandardMaterial({
-        map: boyTexture,
-        transparent: true,
-        alphaTest: 0.05,
-        roughness: 0.75,
-        side: THREE.DoubleSide
-      });
-
-      const spriteMesh = new THREE.Mesh(spriteGeo, spriteMat);
-      spriteMesh.position.y = 1.66;
-      spriteMesh.castShadow = true;
-      root.add(spriteMesh);
-
-      // Cute Blush Aura on cheek
-      const blushGeo = new THREE.CircleGeometry(0.12, 16);
-      const blushMat = new THREE.MeshBasicMaterial({
-        color: 0xFF6B8B,
-        transparent: true,
-        opacity: 0.55
-      });
-      const blushMesh = new THREE.Mesh(blushGeo, blushMat);
-      blushMesh.position.set(0.18, 2.05, 0.02);
-      root.add(blushMesh);
-
-      scene.add(root);
-
-      boy = {
-        isImageMode: true,
-        root,
-        spriteMesh,
-        blushMesh,
-        shadowBlob,
-        initialZ: -55,
-        targetCloseZ: -3.6,
-        escapeZ: -65
-      };
-      return;
-    }
-
-    // =========================================================================
-    // MODE 2: PROCEDURAL 3D BOY RIGGED MODEL
-    // =========================================================================
-    const config = runnerConfig.boyOutfit || {};
-    const hoodieCol = config.hoodieColor || '#2B3E50';
-    const pantsCol = config.pantsColor || '#1A1A1A';
-    const shoesCol = config.shoesColor || '#FFFFFF';
-    const hairCol = config.hairColor || '#1A1A1A';
-    const capCol = config.capColor || '#2B3E50';
-    const skinCol = '#FFDFC4';
-
-    // Materials
-    const skinMat = new THREE.MeshStandardMaterial({ color: skinCol, roughness: 0.65 });
-    const hairMat = new THREE.MeshStandardMaterial({ color: hairCol, roughness: 0.7 });
-    const capMat = new THREE.MeshStandardMaterial({ color: capCol, roughness: 0.6 });
-    const hoodieMat = new THREE.MeshStandardMaterial({ color: hoodieCol, roughness: 0.6 });
-    const pantsMat = new THREE.MeshStandardMaterial({ color: pantsCol, roughness: 0.7 });
-    const shoesMat = new THREE.MeshStandardMaterial({ color: shoesCol, roughness: 0.4 });
-    const shoesAccentMat = new THREE.MeshStandardMaterial({ color: hoodieCol, roughness: 0.4 });
-    const eyeMat = new THREE.MeshStandardMaterial({ color: 0x1E242B, roughness: 0.2 });
-    const whiteMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
-    const blushMat = new THREE.MeshBasicMaterial({ color: 0xFF6B8B, transparent: true, opacity: 0.7 });
-
     // Hips / Pelvis
     const hips = new THREE.Group();
-    hips.position.y = 1.05;
+    hips.position.y = 1.02;
     root.add(hips);
 
-    const pelvisGeo = new THREE.CylinderGeometry(0.24, 0.22, 0.22, 10);
+    const pelvisGeo = new THREE.CylinderGeometry(0.25, 0.23, 0.22, 12);
     const pelvisMesh = new THREE.Mesh(pelvisGeo, pantsMat);
     pelvisMesh.castShadow = true;
     hips.add(pelvisMesh);
 
-    // Torso
+    // Torso (White collared shirt + Open Navy Cardigan)
     const torso = new THREE.Group();
-    torso.position.y = 0.15;
+    torso.position.y = 0.14;
     hips.add(torso);
 
-    const torsoGeo = new THREE.CylinderGeometry(0.3, 0.26, 0.62, 12);
-    const torsoMesh = new THREE.Mesh(torsoGeo, hoodieMat);
-    torsoMesh.position.y = 0.28;
-    torsoMesh.castShadow = true;
-    torso.add(torsoMesh);
+    // White shirt core
+    const shirtGeo = new THREE.CylinderGeometry(0.28, 0.25, 0.62, 12);
+    const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
+    shirtMesh.position.y = 0.28;
+    shirtMesh.castShadow = true;
+    torso.add(shirtMesh);
+
+    // Open Cardigan / Jacket Left Panel
+    const cardGeoL = new THREE.BoxGeometry(0.14, 0.64, 0.32);
+    const cardMeshL = new THREE.Mesh(cardGeoL, jacketMat);
+    cardMeshL.position.set(-0.2, 0.28, 0.04);
+    cardMeshL.castShadow = true;
+    torso.add(cardMeshL);
+
+    // Open Cardigan / Jacket Right Panel
+    const cardMeshR = new THREE.Mesh(cardGeoL, jacketMat);
+    cardMeshR.position.set(0.2, 0.28, 0.04);
+    cardMeshR.castShadow = true;
+    torso.add(cardMeshR);
+
+    // Cardigan Back
+    const cardBackGeo = new THREE.BoxGeometry(0.42, 0.64, 0.12);
+    const cardBackMesh = new THREE.Mesh(cardBackGeo, jacketMat);
+    cardBackMesh.position.set(0, 0.28, -0.16);
+    cardBackMesh.castShadow = true;
+    torso.add(cardBackMesh);
+
+    // Folded Shirt Collar Wings
+    const collarGeo = new THREE.BoxGeometry(0.12, 0.08, 0.05);
+    const collarL = new THREE.Mesh(collarGeo, shirtMat);
+    collarL.position.set(-0.1, 0.58, 0.18);
+    collarL.rotation.set(-0.2, 0.2, -0.3);
+    torso.add(collarL);
+
+    const collarR = new THREE.Mesh(collarGeo, shirtMat);
+    collarR.position.set(0.1, 0.58, 0.18);
+    collarR.rotation.set(-0.2, -0.2, 0.3);
+    torso.add(collarR);
+
+    // Rounded Black Backpack on back (from drawing!)
+    const backpackGroup = new THREE.Group();
+    backpackGroup.position.set(0, 0.28, -0.24);
+    torso.add(backpackGroup);
+
+    const bpMainGeo = new THREE.SphereGeometry(0.24, 14, 14);
+    bpMainGeo.scale(0.9, 1.25, 0.7);
+    const bpMainMesh = new THREE.Mesh(bpMainGeo, backpackMat);
+    bpMainMesh.castShadow = true;
+    backpackGroup.add(bpMainMesh);
+
+    const bpPocketGeo = new THREE.BoxGeometry(0.24, 0.22, 0.12);
+    const bpPocketMesh = new THREE.Mesh(bpPocketGeo, backpackMat);
+    bpPocketMesh.position.set(0, -0.06, -0.1);
+    bpPocketMesh.castShadow = true;
+    backpackGroup.add(bpPocketMesh);
+
+    // Backpack Shoulder Straps
+    const strapGeo = new THREE.BoxGeometry(0.06, 0.42, 0.03);
+    const strapL = new THREE.Mesh(strapGeo, backpackMat);
+    strapL.position.set(-0.16, 0.35, 0.14);
+    torso.add(strapL);
+
+    const strapR = new THREE.Mesh(strapGeo, backpackMat);
+    strapR.position.set(0.16, 0.35, 0.14);
+    torso.add(strapR);
 
     // Neck & Head
     const neck = new THREE.Group();
@@ -533,49 +517,79 @@
     headGroup.position.y = 0.35;
     neck.add(headGroup);
 
-    const headGeo = new THREE.SphereGeometry(0.38, 20, 20);
-    headGeo.scale(1, 1.06, 0.98);
+    // Cute Anime Head (Proportioned to the drawing)
+    const headGeo = new THREE.SphereGeometry(0.42, 22, 22);
+    headGeo.scale(1.04, 1.08, 0.96);
     const headMesh = new THREE.Mesh(headGeo, skinMat);
     headMesh.castShadow = true;
     headGroup.add(headMesh);
 
-    // Fluffy Hair & Cap
-    const capDomeGeo = new THREE.SphereGeometry(0.395, 18, 18, 0, Math.PI * 2, 0, Math.PI / 1.7);
-    const capDome = new THREE.Mesh(capDomeGeo, capMat);
-    capDome.position.set(0, 0.04, -0.02);
-    headGroup.add(capDome);
+    // Fluffy Messy Black Hair (Matching the drawing's loose locks!)
+    const hairGroup = new THREE.Group();
+    headGroup.add(hairGroup);
 
-    // Eyes
+    // Base Skull Hair Dome
+    const hairDomeGeo = new THREE.SphereGeometry(0.44, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.55);
+    const hairDome = new THREE.Mesh(hairDomeGeo, hairMat);
+    hairDome.position.set(0, 0.08, -0.04);
+    hairGroup.add(hairDome);
+
+    // Sculpted Messy Bangs & Fluffy Locks (Matching image)
+    const bangOffsets = [
+      { x: -0.28, y: 0.18, z: 0.36, sx: 0.12, sy: 0.26, sz: 0.12, rx: -0.4, rz: 0.3 },
+      { x: -0.15, y: 0.22, z: 0.40, sx: 0.14, sy: 0.28, sz: 0.14, rx: -0.5, rz: 0.1 },
+      { x: 0.0,   y: 0.24, z: 0.42, sx: 0.15, sy: 0.30, sz: 0.14, rx: -0.5, rz: -0.1 },
+      { x: 0.16,  y: 0.22, z: 0.39, sx: 0.14, sy: 0.28, sz: 0.14, rx: -0.45, rz: -0.25 },
+      { x: 0.30,  y: 0.16, z: 0.34, sx: 0.13, sy: 0.25, sz: 0.12, rx: -0.35, rz: -0.4 },
+      // Side fluff
+      { x: -0.38, y: 0.08, z: 0.18, sx: 0.15, sy: 0.28, sz: 0.16, rx: 0, rz: 0.5 },
+      { x: 0.38,  y: 0.08, z: 0.18, sx: 0.15, sy: 0.28, sz: 0.16, rx: 0, rz: -0.5 },
+      // Top messy crown locks
+      { x: -0.12, y: 0.44, z: 0.08, sx: 0.14, sy: 0.22, sz: 0.14, rx: 0.2, rz: 0.3 },
+      { x: 0.14,  y: 0.45, z: 0.04, sx: 0.15, sy: 0.24, sz: 0.14, rx: -0.2, rz: -0.3 }
+    ];
+
+    bangOffsets.forEach(b => {
+      const lockGeo = new THREE.ConeGeometry(b.sx, b.sy, 6);
+      const lockMesh = new THREE.Mesh(lockGeo, hairMat);
+      lockMesh.position.set(b.x, b.y, b.z);
+      lockMesh.rotation.set(b.rx, 0, b.rz);
+      lockMesh.castShadow = true;
+      hairGroup.add(lockMesh);
+    });
+
+    // Adorable Vertical Dot/Capsule Eyes (Directly matching drawing!)
     const eyeGroup = new THREE.Group();
     headGroup.add(eyeGroup);
 
-    const eyeGeo = new THREE.SphereGeometry(0.075, 14, 14);
-    eyeGeo.scale(0.85, 1.15, 0.4);
-
+    // Elongated vertical dot eyes
+    const eyeGeo = new THREE.BoxGeometry(0.045, 0.095, 0.03);
     const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
-    leftEye.position.set(-0.14, 0.04, 0.35);
+    leftEye.position.set(-0.16, 0.02, 0.39);
     eyeGroup.add(leftEye);
 
     const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
-    rightEye.position.set(0.14, 0.04, 0.35);
+    rightEye.position.set(0.16, 0.02, 0.39);
     eyeGroup.add(rightEye);
 
-    // Blush
-    const blushGeo3D = new THREE.CircleGeometry(0.07, 12);
-    const leftBlush = new THREE.Mesh(blushGeo3D, blushMat);
-    leftBlush.position.set(-0.21, -0.06, 0.33);
+    // Soft Pastel Pink Blush Patches on Cheeks (Directly from drawing!)
+    const blushGeo = new THREE.CircleGeometry(0.08, 14);
+    const leftBlush = new THREE.Mesh(blushGeo, blushMat);
+    leftBlush.position.set(-0.24, -0.08, 0.36);
+    leftBlush.rotation.y = -0.35;
     headGroup.add(leftBlush);
 
-    const rightBlush = new THREE.Mesh(blushGeo3D, blushMat);
-    rightBlush.position.set(0.21, -0.06, 0.33);
+    const rightBlush = new THREE.Mesh(blushGeo, blushMat);
+    rightBlush.position.set(0.24, -0.08, 0.36);
+    rightBlush.rotation.y = 0.35;
     headGroup.add(rightBlush);
 
-    // Mouth
+    // Animated Mouth (Smile / Shocked "O" gasp)
     const mouthGroup = new THREE.Group();
-    mouthGroup.position.set(0, -0.15, 0.35);
+    mouthGroup.position.set(0, -0.16, 0.38);
     headGroup.add(mouthGroup);
 
-    const smileGeo = new THREE.TorusGeometry(0.05, 0.015, 8, 12, Math.PI);
+    const smileGeo = new THREE.TorusGeometry(0.045, 0.015, 8, 12, Math.PI);
     const smileMesh = new THREE.Mesh(smileGeo, eyeMat);
     smileMesh.rotation.z = Math.PI;
     mouthGroup.add(smileMesh);
@@ -585,34 +599,112 @@
     gaspMesh.visible = false;
     mouthGroup.add(gaspMesh);
 
-    // Limbs
+    // Cartoon Anime Sweat-drop for Clumsy Drop moment
+    const sweatGeo = new THREE.ConeGeometry(0.06, 0.16, 8);
+    const sweatDrop = new THREE.Mesh(sweatGeo, sweatMat);
+    sweatDrop.position.set(0.32, 0.42, 0.28);
+    sweatDrop.rotation.z = -0.4;
+    sweatDrop.visible = false;
+    headGroup.add(sweatDrop);
+
+    // Left Arm Hierarchy (Navy Cardigan Sleeve)
     const leftShoulder = new THREE.Group();
     leftShoulder.position.set(-0.35, 0.46, 0);
     torso.add(leftShoulder);
+
+    const leftUpperArmGeo = new THREE.CylinderGeometry(0.09, 0.08, 0.34, 10);
+    const leftUpperArm = new THREE.Mesh(leftUpperArmGeo, jacketMat);
+    leftUpperArm.position.y = -0.17;
+    leftUpperArm.castShadow = true;
+    leftShoulder.add(leftUpperArm);
+
     const leftElbow = new THREE.Group();
-    leftElbow.position.y = -0.32;
+    leftElbow.position.y = -0.34;
     leftShoulder.add(leftElbow);
 
+    const leftForearmGeo = new THREE.CylinderGeometry(0.08, 0.075, 0.28, 10);
+    const leftForearm = new THREE.Mesh(leftForearmGeo, jacketMat);
+    leftForearm.position.y = -0.14;
+    leftForearm.castShadow = true;
+    leftElbow.add(leftForearm);
+
+    const leftHandGeo = new THREE.SphereGeometry(0.075, 10, 10);
+    const leftHand = new THREE.Mesh(leftHandGeo, skinMat);
+    leftHand.position.y = -0.3;
+    leftHand.castShadow = true;
+    leftElbow.add(leftHand);
+
+    // Right Arm Hierarchy (Navy Cardigan Sleeve)
     const rightShoulder = new THREE.Group();
     rightShoulder.position.set(0.35, 0.46, 0);
     torso.add(rightShoulder);
+
+    const rightUpperArm = new THREE.Mesh(leftUpperArmGeo, jacketMat);
+    rightUpperArm.position.y = -0.17;
+    rightUpperArm.castShadow = true;
+    rightShoulder.add(rightUpperArm);
+
     const rightElbow = new THREE.Group();
-    rightElbow.position.y = -0.32;
+    rightElbow.position.y = -0.34;
     rightShoulder.add(rightElbow);
 
+    const rightForearm = new THREE.Mesh(leftForearmGeo, jacketMat);
+    rightForearm.position.y = -0.14;
+    rightForearm.castShadow = true;
+    rightElbow.add(rightForearm);
+
+    const rightHand = new THREE.Mesh(leftHandGeo, skinMat);
+    rightHand.position.y = -0.3;
+    rightHand.castShadow = true;
+    rightElbow.add(rightHand);
+
+    // Left Leg Hierarchy (Dark Trousers + Sneaker)
     const leftHip = new THREE.Group();
     leftHip.position.set(-0.16, -0.1, 0);
     hips.add(leftHip);
+
+    const thighGeo = new THREE.CylinderGeometry(0.12, 0.1, 0.38, 10);
+    const leftThigh = new THREE.Mesh(thighGeo, pantsMat);
+    leftThigh.position.y = -0.19;
+    leftThigh.castShadow = true;
+    leftHip.add(leftThigh);
+
     const leftKnee = new THREE.Group();
     leftKnee.position.y = -0.38;
     leftHip.add(leftKnee);
 
+    const shinGeo = new THREE.CylinderGeometry(0.1, 0.085, 0.38, 10);
+    const leftShin = new THREE.Mesh(shinGeo, pantsMat);
+    leftShin.position.y = -0.19;
+    leftShin.castShadow = true;
+    leftKnee.add(leftShin);
+
+    const leftSneaker = buildIllustratedSneaker(shoeSoleMat, shoeBodyMat);
+    leftSneaker.position.set(0, -0.38, 0.06);
+    leftKnee.add(leftSneaker);
+
+    // Right Leg Hierarchy (Dark Trousers + Sneaker)
     const rightHip = new THREE.Group();
     rightHip.position.set(0.16, -0.1, 0);
     hips.add(rightHip);
+
+    const rightThigh = new THREE.Mesh(thighGeo, pantsMat);
+    rightThigh.position.y = -0.19;
+    rightThigh.castShadow = true;
+    rightHip.add(rightThigh);
+
     const rightKnee = new THREE.Group();
     rightKnee.position.y = -0.38;
     rightHip.add(rightKnee);
+
+    const rightShin = new THREE.Mesh(shinGeo, pantsMat);
+    rightShin.position.y = -0.19;
+    rightShin.castShadow = true;
+    rightKnee.add(rightShin);
+
+    const rightSneaker = buildIllustratedSneaker(shoeSoleMat, shoeBodyMat);
+    rightSneaker.position.set(0, -0.38, 0.06);
+    rightKnee.add(rightSneaker);
 
     scene.add(root);
 
@@ -628,19 +720,54 @@
       rightBlush,
       smileMesh,
       gaspMesh,
+      sweatDrop,
+      backpack: backpackGroup,
       leftShoulder,
       leftElbow,
+      leftHand,
       rightShoulder,
       rightElbow,
+      rightHand,
       leftHip,
       leftKnee,
+      leftSneaker,
       rightHip,
       rightKnee,
+      rightSneaker,
       shadowBlob,
       initialZ: -55,
       targetCloseZ: -3.6,
       escapeZ: -65
     };
+  }
+
+  /**
+   * Helper: Build Chunky Sneaker Matching the Drawing
+   */
+  function buildIllustratedSneaker(soleMat, bodyMat) {
+    const shoe = new THREE.Group();
+
+    // Thick White Sole
+    const soleGeo = new THREE.BoxGeometry(0.19, 0.08, 0.38);
+    const sole = new THREE.Mesh(soleGeo, soleMat);
+    sole.position.y = 0.04;
+    sole.castShadow = true;
+    shoe.add(sole);
+
+    // Black Canvas Upper
+    const upperGeo = new THREE.BoxGeometry(0.18, 0.12, 0.34);
+    const upper = new THREE.Mesh(upperGeo, bodyMat);
+    upper.position.set(0, 0.12, -0.02);
+    upper.castShadow = true;
+    shoe.add(upper);
+
+    // White Toe Cap
+    const toeGeo = new THREE.BoxGeometry(0.18, 0.08, 0.12);
+    const toe = new THREE.Mesh(toeGeo, soleMat);
+    toe.position.set(0, 0.08, 0.12);
+    shoe.add(toe);
+
+    return shoe;
   }
 
   /**
@@ -885,20 +1012,14 @@
     // Reset positions
     boy.root.position.set(0, 0, boy.initialZ);
     boy.root.rotation.y = 0;
-
-    if (boy.isImageMode) {
-      boy.spriteMesh.scale.set(1, 1, 1);
-      boy.spriteMesh.rotation.set(0, 0, 0);
-      boy.spriteMesh.position.set(0, 1.66, 0);
-      boy.blushMesh.material.opacity = 0.55;
-      boy.blushMesh.scale.set(1, 1, 1);
-    } else {
-      boy.eyeGroup.scale.set(1, 1, 1);
-      boy.smileMesh.visible = true;
-      boy.gaspMesh.visible = false;
-      boy.leftBlush.material.opacity = 0.6;
-      boy.rightBlush.material.opacity = 0.6;
-    }
+    boy.eyeGroup.scale.set(1, 1, 1);
+    boy.smileMesh.visible = true;
+    boy.gaspMesh.visible = false;
+    boy.sweatDrop.visible = false;
+    boy.leftBlush.scale.set(1, 1, 1);
+    boy.rightBlush.scale.set(1, 1, 1);
+    boy.leftBlush.material.opacity = 0.65;
+    boy.rightBlush.material.opacity = 0.65;
 
     // Reset letter
     letter.isGrounded = false;
@@ -983,7 +1104,7 @@
   }
 
   /**
-   * State 1: Approaching (Running towards screen)
+   * State 1: Approaching (Running Towards Screen with Full Skeletal Animation)
    */
   function handleApproaching(delta) {
     const runSpeed = 11.5;
@@ -992,46 +1113,44 @@
     const strideFreq = 14;
     const stride = stateTime * strideFreq;
 
-    if (boy.isImageMode) {
-      // Image Character Animation: Bouncing stride, running tilt, squash & stretch
-      boy.spriteMesh.position.y = 1.66 + Math.abs(Math.sin(stride)) * 0.16;
-      boy.spriteMesh.rotation.z = Math.sin(stride * 0.5) * 0.07;
-      boy.spriteMesh.scale.set(
-        1.0 + Math.sin(stride * 2) * 0.04,
-        1.0 - Math.sin(stride * 2) * 0.04,
-        1.0
-      );
+    // Alternating leg swing with knee flexion!
+    boy.leftHip.rotation.x = Math.sin(stride) * 0.8;
+    boy.leftKnee.rotation.x = Math.max(0, -Math.sin(stride + 0.6) * 1.35);
 
-      // Letter positioned in front of his chest
-      letter.group.position.set(
-        boy.root.position.x,
-        boy.spriteMesh.position.y - 0.2,
-        boy.root.position.z + 0.35
-      );
-      letter.group.rotation.set(-0.25, 0, boy.spriteMesh.rotation.z);
-    } else {
-      // 3D Procedural Rigged Animation
-      boy.leftHip.rotation.x = Math.sin(stride) * 0.75;
-      boy.leftKnee.rotation.x = Math.max(0, -Math.sin(stride + 0.5) * 1.15);
-      boy.rightHip.rotation.x = -Math.sin(stride) * 0.75;
-      boy.rightKnee.rotation.x = Math.max(0, Math.sin(stride - 0.5) * 1.15);
-      boy.hips.position.y = 1.05 + Math.abs(Math.sin(stride)) * 0.12;
-      boy.torso.rotation.z = Math.sin(stride * 0.5) * 0.06;
+    boy.rightHip.rotation.x = -Math.sin(stride) * 0.8;
+    boy.rightKnee.rotation.x = Math.max(0, Math.sin(stride - 0.6) * 1.35);
 
-      letter.group.position.set(
-        boy.root.position.x,
-        boy.root.position.y + boy.hips.position.y + 0.35 + Math.abs(Math.sin(stride)) * 0.08,
-        boy.root.position.z + 0.42
-      );
-      letter.group.rotation.set(-0.35, boy.torso.rotation.y, boy.torso.rotation.z);
-    }
+    // Hips vertical bounce and body sway
+    boy.hips.position.y = 1.02 + Math.abs(Math.sin(stride)) * 0.14;
+    boy.torso.rotation.y = -Math.sin(stride * 0.5) * 0.09;
+    boy.torso.rotation.z = Math.sin(stride * 0.5) * 0.05;
+
+    // Backpack sways on back
+    boy.backpack.rotation.z = -Math.sin(stride * 0.5) * 0.08;
+
+    // Arms carry letter securely
+    boy.leftShoulder.rotation.x = -0.75 + Math.sin(stride) * 0.15;
+    boy.leftShoulder.rotation.y = 0.25;
+    boy.leftElbow.rotation.x = -0.85;
+
+    boy.rightShoulder.rotation.x = -0.75 - Math.sin(stride) * 0.15;
+    boy.rightShoulder.rotation.y = -0.25;
+    boy.rightElbow.rotation.x = -0.85;
+
+    // Letter attached in front of his chest
+    letter.group.position.set(
+      boy.root.position.x,
+      boy.root.position.y + boy.hips.position.y + 0.38,
+      boy.root.position.z + 0.45
+    );
+    letter.group.rotation.set(-0.35, boy.torso.rotation.y, boy.torso.rotation.z);
 
     // Footstep Audio & Dust Emission
     footstepTimer += delta;
     if (footstepTimer > 0.22) {
       footstepTimer = 0;
       playSfx('footstep');
-      const footX = Math.sin(stride) > 0 ? -0.2 : 0.2;
+      const footX = Math.sin(stride) > 0 ? -0.18 : 0.18;
       spawnDust(boy.root.position.x + footX, 0, boy.root.position.z);
     }
 
@@ -1052,17 +1171,13 @@
     currentState = STATE.OFFERING;
     stateTime = 0;
 
-    if (boy.isImageMode) {
-      boy.spriteMesh.rotation.set(0, 0, 0);
-      boy.spriteMesh.scale.set(1.02, 1.02, 1);
-    } else {
-      boy.leftHip.rotation.x = 0;
-      boy.leftKnee.rotation.x = 0;
-      boy.rightHip.rotation.x = 0;
-      boy.rightKnee.rotation.x = 0;
-      boy.hips.position.y = 1.05;
-      boy.torso.rotation.set(0, 0, 0);
-    }
+    // Reset legs to cute relaxed stance
+    boy.leftHip.rotation.set(-0.06, 0, 0);
+    boy.leftKnee.rotation.set(0.08, 0, 0);
+    boy.rightHip.rotation.set(0.06, 0, 0);
+    boy.rightKnee.rotation.set(0.08, 0, 0);
+    boy.hips.position.y = 1.02;
+    boy.torso.rotation.set(0, 0, 0);
 
     if (ui.statusText) {
       ui.statusText.textContent = "He has something for you! 💌";
@@ -1080,37 +1195,31 @@
     const ease = 1 - Math.pow(1 - t, 3);
     const pant = Math.sin(stateTime * 5.5) * 0.035;
 
-    if (boy.isImageMode) {
-      // Panting & anticipation
-      boy.spriteMesh.position.y = 1.66 + pant;
-      boy.blushMesh.scale.set(1.0 + ease * 0.45, 1.0 + ease * 0.45, 1);
-      boy.blushMesh.material.opacity = 0.55 + ease * 0.35;
+    // Panting breathing
+    boy.torso.position.y = 0.14 + pant;
+    boy.headGroup.rotation.x = -0.15 + Math.sin(stateTime * 3) * 0.03;
 
-      // Letter held forward right in front of camera
-      letter.group.position.set(
-        0,
-        1.38 + ease * 0.08 + pant,
-        boy.root.position.z + 0.38 + ease * 0.72
-      );
-      letter.group.rotation.set(-0.25 + ease * 0.15, 0, Math.sin(stateTime * 2) * 0.03);
-    } else {
-      boy.torso.position.y = 0.15 + pant;
-      boy.headGroup.rotation.x = -0.12 + Math.sin(stateTime * 3) * 0.03;
-      boy.leftBlush.scale.set(1.0 + ease * 0.45, 1.0 + ease * 0.45, 1);
-      boy.rightBlush.scale.set(1.0 + ease * 0.45, 1.0 + ease * 0.45, 1);
+    // Blush intensifies
+    const blushScale = 1.0 + ease * 0.5;
+    boy.leftBlush.scale.set(blushScale, blushScale, 1);
+    boy.rightBlush.scale.set(blushScale, blushScale, 1);
+    boy.leftBlush.material.opacity = 0.65 + ease * 0.35;
+    boy.rightBlush.material.opacity = 0.65 + ease * 0.35;
 
-      boy.leftShoulder.rotation.x = -0.7 - ease * 0.55;
-      boy.rightShoulder.rotation.x = -0.7 - ease * 0.55;
+    // Arms extend forward presenting letter
+    boy.leftShoulder.rotation.x = -0.75 - ease * 0.55;
+    boy.rightShoulder.rotation.x = -0.75 - ease * 0.55;
+    boy.leftElbow.rotation.x = -0.85 + ease * 0.55;
+    boy.rightElbow.rotation.x = -0.85 + ease * 0.55;
 
-      letter.group.position.set(
-        boy.root.position.x,
-        1.38 + ease * 0.08 + pant,
-        boy.root.position.z + 0.42 + ease * 0.65
-      );
-      letter.group.rotation.set(-0.25 + ease * 0.15, 0, Math.sin(stateTime * 2) * 0.03);
-    }
+    // Letter pushed towards viewer
+    letter.group.position.set(
+      boy.root.position.x,
+      1.38 + ease * 0.08 + pant,
+      boy.root.position.z + 0.42 + ease * 0.68
+    );
+    letter.group.rotation.set(-0.25 + ease * 0.15, 0, Math.sin(stateTime * 2) * 0.03);
 
-    // Pulse halo glow on wax seal
     letter.halo.material.opacity = 0.35 + Math.sin(stateTime * 6) * 0.2;
 
     if (stateTime > 2.2) {
@@ -1127,15 +1236,15 @@
 
     playSfx('gasp');
 
-    if (boy.isImageMode) {
-      boy.spriteMesh.position.y = 1.78; // Startled jump!
-    } else {
-      boy.eyeGroup.scale.set(1.4, 1.4, 1.4);
-      boy.smileMesh.visible = false;
-      boy.gaspMesh.visible = true;
-      boy.leftShoulder.rotation.x = -0.4;
-      boy.rightShoulder.rotation.x = -0.4;
-    }
+    // Startled expression!
+    boy.eyeGroup.scale.set(1.4, 1.4, 1.4);
+    boy.smileMesh.visible = false;
+    boy.gaspMesh.visible = true;
+    boy.sweatDrop.visible = true;
+
+    // Hands flinch back
+    boy.leftShoulder.rotation.x = -0.35;
+    boy.rightShoulder.rotation.x = -0.35;
 
     const speechText = window.STORY_CONFIG?.runner3d?.speechDrop || "Aahh!! Wait! Nooo! 😱";
     showSpeechBubble(speechText);
@@ -1147,8 +1256,8 @@
     // Set initial physics flight velocity for letter
     letter.velocity.set(
       (Math.random() - 0.5) * 0.02,
-      0.035, // slight arc upwards
-      0.085  // forward momentum towards screen
+      0.035,
+      0.085
     );
   }
 
@@ -1157,23 +1266,18 @@
    */
   function handleDropping(delta) {
     if (!letter.isGrounded) {
-      // Apply gravity and forward glide
       letter.velocity.y -= 0.095 * delta * 60;
       letter.group.position.add(letter.velocity);
 
-      // Aerodynamic paper flutter rotation
+      // Paper aerodynamic flutter
       letter.group.rotation.x += Math.sin(stateTime * 14) * 0.08;
       letter.group.rotation.z += Math.cos(stateTime * 10) * 0.06;
       letter.group.rotation.y += 0.02;
 
       // Boy trembles in shock
-      if (boy.isImageMode) {
-        boy.spriteMesh.rotation.z = Math.sin(stateTime * 20) * 0.05;
-      } else {
-        boy.headGroup.rotation.z = Math.sin(stateTime * 20) * 0.04;
-      }
+      boy.headGroup.rotation.z = Math.sin(stateTime * 20) * 0.04;
+      boy.sweatDrop.position.y = 0.42 + Math.sin(stateTime * 10) * 0.05;
 
-      // Landing detection
       if (letter.group.position.y <= letter.targetGroundY || letter.group.position.z >= letter.targetZ) {
         letter.isGrounded = true;
         letter.group.position.y = letter.targetGroundY;
@@ -1184,7 +1288,6 @@
         spawnDust(letter.group.position.x, letter.targetGroundY, letter.targetZ);
       }
     } else {
-      // Soft elastic landing bounce
       letter.bounceT += delta * 12;
       const bounce = Math.abs(Math.sin(letter.bounceT)) * Math.exp(-letter.bounceT * 0.6) * 0.12;
       letter.group.position.y = letter.targetGroundY + bounce;
@@ -1203,16 +1306,14 @@
     stateTime = 0;
     footstepTimer = 0;
 
-    if (boy.isImageMode) {
-      // Flip character horizontally to run away!
-      boy.spriteMesh.scale.x = -1.0;
-      boy.blushMesh.scale.set(1.6, 1.6, 1);
-    } else {
-      boy.leftShoulder.rotation.set(-1.6, 0.4, 0.2);
-      boy.rightShoulder.rotation.set(-1.6, -0.4, -0.2);
-      boy.leftBlush.scale.set(1.6, 1.6, 1);
-      boy.rightBlush.scale.set(1.6, 1.6, 1);
-    }
+    // Hands clutch blushing face in embarrassment
+    boy.leftShoulder.rotation.set(-1.6, 0.4, 0.2);
+    boy.leftElbow.rotation.set(-1.4, 0, 0);
+    boy.rightShoulder.rotation.set(-1.6, -0.4, -0.2);
+    boy.rightElbow.rotation.set(-1.4, 0, 0);
+
+    boy.leftBlush.scale.set(1.6, 1.6, 1);
+    boy.rightBlush.scale.set(1.6, 1.6, 1);
 
     const speechText = window.STORY_CONFIG?.runner3d?.speechRunAway || "I'm too embarrassed!! Bye! 🏃‍♂️💨";
     showSpeechBubble(speechText);
@@ -1223,31 +1324,29 @@
   }
 
   /**
-   * State 4: Panic Run (Comical double-speed sprint away)
+   * State 4: Panic Run (3D 180° Turnaround & Comical Double-Speed Sprint)
    */
   function handlePanicRun(delta) {
+    // Smooth 3D Turnaround to face away (reveals backpack on his back!)
+    if (boy.root.rotation.y < Math.PI) {
+      boy.root.rotation.y = Math.min(boy.root.rotation.y + delta * 14, Math.PI);
+    }
+
     const sprintSpeed = 16.5;
     boy.root.position.z -= sprintSpeed * delta;
 
+    // Fast comical cartoon sprint cycle
     const strideFreq = 22;
     const stride = stateTime * strideFreq;
 
-    if (boy.isImageMode) {
-      // Fast comical cartoon sprint bounce
-      boy.spriteMesh.position.y = 1.66 + Math.abs(Math.sin(stride)) * 0.2;
-      boy.spriteMesh.rotation.z = Math.sin(stride) * 0.1;
-    } else {
-      if (boy.root.rotation.y < Math.PI) {
-        boy.root.rotation.y = Math.min(boy.root.rotation.y + delta * 12, Math.PI);
-      }
-      boy.leftHip.rotation.x = Math.sin(stride) * 0.9;
-      boy.leftKnee.rotation.x = Math.max(0, -Math.sin(stride + 0.5) * 1.3);
-      boy.rightHip.rotation.x = -Math.sin(stride) * 0.9;
-      boy.rightKnee.rotation.x = Math.max(0, Math.sin(stride - 0.5) * 1.3);
-      boy.hips.position.y = 1.05 + Math.abs(Math.sin(stride)) * 0.16;
-    }
+    boy.leftHip.rotation.x = Math.sin(stride) * 0.9;
+    boy.leftKnee.rotation.x = Math.max(0, -Math.sin(stride + 0.5) * 1.35);
+    boy.rightHip.rotation.x = -Math.sin(stride) * 0.9;
+    boy.rightKnee.rotation.x = Math.max(0, Math.sin(stride - 0.5) * 1.35);
 
-    // Dust trail behind fleeing boy
+    boy.hips.position.y = 1.02 + Math.abs(Math.sin(stride)) * 0.16;
+
+    // Dust trail
     footstepTimer += delta;
     if (footstepTimer > 0.14) {
       footstepTimer = 0;
@@ -1255,7 +1354,6 @@
       spawnDust(boy.root.position.x, 0, boy.root.position.z);
     }
 
-    // Dropped letter stays hovering gently in foreground
     letter.group.position.y = letter.targetGroundY + Math.sin(stateTime * 2.5) * 0.02;
 
     if (boy.root.position.z < -14 && ui.speechBubble) {
@@ -1445,8 +1543,8 @@
     if (!ui.speechBubble || !boy || !camera) return;
 
     const headWorldPos = new THREE.Vector3();
-    const headY = (boy.isImageMode && boy.spriteMesh) ? boy.spriteMesh.position.y + 1.55 : 2.2;
-    headWorldPos.set(boy.root.position.x, headY, boy.root.position.z);
+    boy.headGroup.getWorldPosition(headWorldPos);
+    headWorldPos.y += 0.58;
 
     headWorldPos.project(camera);
 

@@ -29,7 +29,7 @@ const STORY_CONFIG = {
   // ---------------------------------------------------------------------------
   runner3d: {
     enabled: true,                       // Plays the 3D boy running & letter drop on open
-    characterMode: "image",              // "image" uses your cute boy illustration! ("3d" for procedural model)
+    characterMode: "3d",                 // Full 3D animated character modeled directly after your illustration!
     characterImage: "assets/runner-boy-cutout.png", // Your uploaded illustrated boy
     speechApproach: "H-hey! I have this for you...! 💌",
     speechDrop: "Aahh!! Wait! Nooo! 😱",
