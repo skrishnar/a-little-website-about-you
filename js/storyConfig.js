@@ -25,6 +25,26 @@ const STORY_CONFIG = {
   },
 
   // ---------------------------------------------------------------------------
+  // 1.5 3D BOY LETTER RUNNER: OPENING CINEMATIC EXPERIENCE
+  // ---------------------------------------------------------------------------
+  runner3d: {
+    enabled: true,                       // Plays the 3D boy running & letter drop on open
+    speechApproach: "H-hey! I have this for you...! 💌",
+    speechDrop: "Aahh!! Wait! Nooo! 😱",
+    speechRunAway: "I'm too embarrassed!! Bye! 🏃‍♂️💨",
+    droppedLetterTitle: "You've Got a Letter!",
+    droppedLetterDesc: "He dropped it right in front of you... click the letter to open it! ✨",
+    openLetterBtnText: "Open The Letter",
+    boyOutfit: {
+      hoodieColor: "#E88BA6",            // Pastel rose hoodie
+      pantsColor: "#433248",             // Stylish dark plum joggers
+      shoesColor: "#FFFFFF",             // Crisp white streetwear sneakers
+      hairColor: "#3D2B1F",              // Dark brown anime styled hair
+      capColor: "#7B61FF",               // Lavender streetwear cap
+    }
+  },
+
+  // ---------------------------------------------------------------------------
   // 2. CHAPTER 1: WELCOME SCREEN (A Tiny Surprise)
   // ---------------------------------------------------------------------------
   welcome: {

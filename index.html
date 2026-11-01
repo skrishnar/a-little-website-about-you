@@ -14,13 +14,67 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 
-  <!-- Stylesheet -->
+  <!-- Three.js 3D Library (CDN with fallback) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/runner3d.css">
 </head>
 <body>
 
   <!-- Ambient Floating Canvas (Hearts, Twinkles, Confetti) -->
   <canvas id="particle-canvas"></canvas>
+
+  <!-- =========================================================================
+       3D BOY LETTER RUNNER: OPENING CINEMATIC EXPERIENCE
+       ========================================================================= -->
+  <div id="runner-3d-overlay" class="runner-3d-overlay" role="region" aria-label="3D Letter Delivery Intro">
+    <canvas id="runner-3d-canvas"></canvas>
+    <div class="runner-vignette"></div>
+
+    <!-- Top HUD Controls -->
+    <div class="runner-hud-top">
+      <div class="runner-badge">
+        <span class="runner-badge-dot"></span>
+        <span id="runner-status-text">Someone is running towards you... 🏃‍♂️💨</span>
+      </div>
+      <div class="runner-top-actions">
+        <button class="runner-icon-btn" id="btn-runner-audio" title="Toggle audio sound effects" aria-label="Toggle sound">
+          <span id="runner-audio-icon">🔔</span>
+        </button>
+        <button class="runner-pill-btn" id="btn-runner-skip" title="Skip to story">
+          <span>Skip to Website</span>
+          <span>➔</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Comic Speech Bubble above the boy -->
+    <div id="runner-speech-bubble" class="runner-speech-bubble" style="display: none;">
+      <div class="speech-tail"></div>
+      <p id="runner-speech-text">H-hey! I have this for you...! 💌</p>
+    </div>
+
+    <!-- Bottom Interactive Prompt for the Dropped Letter -->
+    <div id="runner-letter-prompt" class="runner-letter-prompt" style="display: none;">
+      <div class="letter-prompt-card">
+        <div class="letter-prompt-icon">💌</div>
+        <h2 class="letter-prompt-title">You've Got a Letter!</h2>
+        <p class="letter-prompt-desc">He dropped it right in front of you... click the letter to open it!</p>
+        <div class="letter-prompt-actions">
+          <button class="letter-open-btn" id="btn-open-dropped-letter" aria-label="Open the dropped letter">
+            <span>✉️</span>
+            <span>Open The Letter</span>
+            <span>✨</span>
+          </button>
+          <button class="letter-replay-btn" id="btn-runner-replay" title="Replay the 3D boy running animation">
+            <span>↺ Replay delivery</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- =========================================================================
        TOP NAVIGATION BAR
@@ -41,6 +95,9 @@
     </div>
 
     <div class="nav-controls" role="toolbar" aria-label="Site settings and audio controls">
+      <button class="icon-btn btn-replay-boy" id="btn-replay-boy" title="Watch 3D letter delivery again" aria-label="Replay 3D delivery">
+        <span>🏃‍♂️</span>
+      </button>
       <button class="icon-btn" id="btn-music-toggle" title="Play gentle background music" aria-label="Toggle background music">
         <span>🔇</span>
       </button>
@@ -390,10 +447,11 @@
     <span id="toast-message">Secret message unlocked!</span>
   </div>
 
-  <!-- Scripts: Config -> Audio -> Particles -> App -->
+  <!-- Scripts: Config -> Audio -> Particles -> 3D Runner -> App -->
   <script src="js/storyConfig.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
+  <script src="js/runner3d.js"></script>
   <script src="js/app.js"></script>
 
 </body>

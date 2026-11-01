@@ -277,6 +277,161 @@ class SoundController {
       }, 160);
     } catch (e) {}
   }
+
+  /**
+   * Sound effect: Runner sneaker footstep on road
+   */
+  playRunnerFootstep() {
+    if (!this.sfxEnabled) return;
+    this.initContext();
+    try {
+      const now = this.audioCtx.currentTime;
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      const filter = this.audioCtx.createBiquadFilter();
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(260 + Math.random() * 80, now);
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(130 + Math.random() * 30, now);
+      osc.frequency.exponentialRampToValueAtTime(35, now + 0.05);
+
+      gain.gain.setValueAtTime(0.045, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.055);
+    } catch (e) {}
+  }
+
+  /**
+   * Sound effect: Cute shy gasp when dropping the letter
+   */
+  playRunnerGasp() {
+    if (!this.sfxEnabled) return;
+    this.initContext();
+    try {
+      const now = this.audioCtx.currentTime;
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(420, now);
+      osc.frequency.exponentialRampToValueAtTime(740, now + 0.12);
+
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.19);
+    } catch (e) {}
+  }
+
+  /**
+   * Sound effect: Crisp paper drop landing on screen
+   */
+  playRunnerDrop() {
+    if (!this.sfxEnabled) return;
+    this.initContext();
+    try {
+      const now = this.audioCtx.currentTime;
+
+      // Paper flutter noise burst
+      const bufferSize = Math.floor(this.audioCtx.sampleRate * 0.12);
+      const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.15;
+      }
+      const noise = this.audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1100, now);
+
+      const noiseGain = this.audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.09, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.audioCtx.destination);
+
+      noise.start(now);
+
+      // Soft tactile thud resonance
+      const osc = this.audioCtx.createOscillator();
+      const oscGain = this.audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(90, now + 0.1);
+      oscGain.gain.setValueAtTime(0.07, now);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+      osc.connect(oscGain);
+      oscGain.connect(this.audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.11);
+    } catch (e) {}
+  }
+
+  /**
+   * Sound effect: Wax seal snap and celebratory opening chime
+   */
+  playSealBreak() {
+    if (!this.sfxEnabled) return;
+    this.initContext();
+    try {
+      const now = this.audioCtx.currentTime;
+
+      // Crisp snap
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(120, now + 0.04);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.05);
+
+      // Sweet romantic harp glissando
+      const chord = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
+      chord.forEach((freq, idx) => {
+        setTimeout(() => {
+          if (!this.audioCtx) return;
+          const noteTime = this.audioCtx.currentTime;
+          const noteOsc = this.audioCtx.createOscillator();
+          const noteGain = this.audioCtx.createGain();
+
+          noteOsc.type = 'sine';
+          noteOsc.frequency.setValueAtTime(freq, noteTime);
+
+          noteGain.gain.setValueAtTime(0.1, noteTime);
+          noteGain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 0.7);
+
+          noteOsc.connect(noteGain);
+          noteGain.connect(this.audioCtx.destination);
+
+          noteOsc.start(noteTime);
+          noteOsc.stop(noteTime + 0.75);
+        }, idx * 60);
+      });
+    } catch (e) {}
+  }
 }
 
 // Global sound manager instance

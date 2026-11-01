@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ==============================================================================
  * 💌 A LITTLE WEBSITE ABOUT YOU — MAIN APPLICATION CONTROLLER
  * ==============================================================================
@@ -932,6 +932,29 @@
     // Initialize Modal and Global Controls
     initModalEvents();
     initControls();
+
+    // Expose global app API for external controls (like 3D Runner)
+    window.app = {
+      goToChapter: goToChapter,
+      onLetterOpenedFromRunner: function() {
+        var envelopeBox = document.getElementById('welcome-envelope-box');
+        var openEnvelopeBtn = document.getElementById('btn-open-envelope');
+        var welcomeReveal = document.getElementById('welcome-reveal');
+
+        if (!state.envelopeOpened) {
+          state.envelopeOpened = true;
+          if (envelopeBox) envelopeBox.classList.add('opened');
+          if (openEnvelopeBtn) openEnvelopeBtn.style.display = 'none';
+          if (welcomeReveal) {
+            welcomeReveal.style.display = 'block';
+          }
+          if (window.particleEngine) {
+            window.particleEngine.burstConfetti(window.innerWidth / 2, window.innerHeight / 2, 45);
+          }
+        }
+        goToChapter(0);
+      }
+    };
 
     // Start on Chapter 1 (index 0)
     goToChapter(0);

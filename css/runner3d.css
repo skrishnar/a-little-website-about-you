@@ -1,0 +1,406 @@
+/*
+ * ==============================================================================
+ * 🏃‍♂️ 3D BOY LETTER RUNNER — STYLESHEET
+ * ==============================================================================
+ * Cinematic full-screen Three.js overlay, speech bubbles, HUD controls,
+ * dropped letter call-to-action card, and opening transitions.
+ * ==============================================================================
+ */
+
+.runner-3d-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #FFF5EB 0%, #FED9E2 45%, #E3D2FA 80%, #C9B8E8 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.85s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.runner-3d-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#runner-3d-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  outline: none;
+  cursor: default;
+}
+
+#runner-3d-canvas.clickable-letter {
+  cursor: pointer;
+}
+
+/* ==============================================================================
+   Cinematic Letterbox Vignette
+   ============================================================================== */
+.runner-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: inset 0 0 100px rgba(67, 50, 72, 0.15);
+  background: radial-gradient(circle at center, transparent 65%, rgba(67, 50, 72, 0.12) 100%);
+}
+
+/* ==============================================================================
+   Top HUD Bar
+   ============================================================================== */
+.runner-hud-top {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1100px;
+  padding: 22px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+.runner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 24px rgba(67, 50, 72, 0.08);
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #433248;
+  transition: all 0.3s ease;
+}
+
+.runner-badge-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #E88BA6;
+  box-shadow: 0 0 10px #E88BA6;
+  animation: pulse-dot 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.6; }
+}
+
+.runner-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.runner-icon-btn {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  color: #433248;
+  box-shadow: 0 6px 18px rgba(67, 50, 72, 0.08);
+  transition: all 0.25s ease;
+}
+
+.runner-icon-btn:hover {
+  transform: translateY(-2px) scale(1.06);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 8px 22px rgba(232, 139, 166, 0.25);
+}
+
+.runner-pill-btn {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  padding: 9px 18px;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #6C5574;
+  box-shadow: 0 6px 18px rgba(67, 50, 72, 0.08);
+  transition: all 0.25s ease;
+}
+
+.runner-pill-btn:hover {
+  transform: translateY(-2px);
+  background: #FFFFFF;
+  color: #E88BA6;
+  box-shadow: 0 8px 22px rgba(232, 139, 166, 0.22);
+}
+
+/* ==============================================================================
+   Speech Bubble Above Boy
+   ============================================================================== */
+.runner-speech-bubble {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  background: #FFFFFF;
+  padding: 14px 22px;
+  border-radius: 20px;
+  box-shadow: 0 14px 38px rgba(67, 50, 72, 0.18), 0 0 0 2px rgba(232, 139, 166, 0.25);
+  transform: translate(-50%, -100%) scale(0.7);
+  opacity: 0;
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  white-space: nowrap;
+}
+
+.runner-speech-bubble.active {
+  transform: translate(-50%, -100%) scale(1);
+  opacity: 1;
+}
+
+.runner-speech-bubble p {
+  font-family: var(--font-hand, 'Caveat', cursive, sans-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #433248;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.speech-tail {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 11px solid #FFFFFF;
+}
+
+/* ==============================================================================
+   Dropped Letter Interactive Prompt (Bottom Card)
+   ============================================================================== */
+.runner-letter-prompt {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  opacity: 0;
+  z-index: 25;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+  width: 90%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.runner-letter-prompt.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.letter-prompt-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 28px;
+  padding: 24px 28px 22px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 20px 50px rgba(67, 50, 72, 0.16), 0 0 0 1px rgba(232, 139, 166, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.letter-prompt-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FFB8D2, #E88BA6, #C5B3E6, #FFCCD5);
+}
+
+.letter-prompt-icon {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+  display: inline-block;
+  animation: bounce-letter 1.8s infinite ease-in-out;
+}
+
+@keyframes bounce-letter {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+.letter-prompt-title {
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #433248;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.letter-prompt-desc {
+  font-family: var(--font-sans, 'Nunito', sans-serif);
+  font-size: 0.96rem;
+  color: #6C5574;
+  line-height: 1.45;
+  margin-bottom: 18px;
+}
+
+.letter-prompt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.letter-open-btn {
+  background: linear-gradient(135deg, #E88BA6 0%, #C96684 100%);
+  color: #FFFFFF;
+  border: none;
+  padding: 14px 34px;
+  border-radius: 9999px;
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  box-shadow: 0 10px 28px rgba(232, 139, 166, 0.42);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.letter-open-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 34px rgba(232, 139, 166, 0.55);
+  background: linear-gradient(135deg, #ED97AF 0%, #D4718F 100%);
+}
+
+.letter-open-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.letter-replay-btn {
+  background: transparent;
+  border: none;
+  color: #8C7594;
+  font-family: var(--font-sans, 'Nunito', sans-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.letter-replay-btn:hover {
+  color: #E88BA6;
+  background: rgba(232, 139, 166, 0.1);
+}
+
+/* ==============================================================================
+   Screen Flash on Letter Open Transition
+   ============================================================================== */
+.runner-flash-overlay {
+  position: fixed;
+  inset: 0;
+  background: #FFFFFF;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100000;
+  transition: opacity 0.5s ease-out;
+}
+
+.runner-flash-overlay.flashing {
+  opacity: 0.85;
+}
+
+/* ==============================================================================
+   Header Replay Button in Main App
+   ============================================================================== */
+.btn-replay-boy {
+  position: relative;
+  overflow: visible;
+}
+
+.btn-replay-boy:hover {
+  transform: translateY(-2px) scale(1.08);
+}
+
+/* ==============================================================================
+   Responsive Adjustments
+   ============================================================================== */
+@media (max-width: 640px) {
+  .runner-hud-top {
+    padding: 14px 16px;
+  }
+  .runner-badge {
+    padding: 6px 14px;
+    font-size: 0.82rem;
+  }
+  .runner-pill-btn {
+    padding: 7px 14px;
+    font-size: 0.8rem;
+  }
+  .runner-speech-bubble {
+    padding: 10px 16px;
+  }
+  .runner-speech-bubble p {
+    font-size: 1.25rem;
+  }
+  .runner-letter-prompt {
+    bottom: 20px;
+    width: 94%;
+  }
+  .letter-prompt-card {
+    padding: 18px 20px 16px;
+    border-radius: 22px;
+  }
+  .letter-prompt-title {
+    font-size: 1.3rem;
+  }
+  .letter-prompt-desc {
+    font-size: 0.88rem;
+    margin-bottom: 14px;
+  }
+  .letter-open-btn {
+    padding: 12px 24px;
+    font-size: 0.98rem;
+  }
+}

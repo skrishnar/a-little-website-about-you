@@ -3,11 +3,21 @@
 
 A fully functional, whimsical, emotionally sincere interactive website designed to express your feelings to your crush in a secret little world created just for them.
 
-Combines elements of a romantic visual novel, a playful interactive mini-game, a digital scrapbook, and an honest handwritten letter.
+Combines elements of a 3D animated cinematic opening, romantic visual novel, playful interactive mini-game, digital scrapbook, and honest handwritten letter.
 
 ---
 
 ## ✨ Features
+
+- **🏃‍♂️ Opening Scene: 3D Boy Letter Delivery (Upon Opening the Link!)**
+  - **Cinematic Approach**: The website opens with a dreamy sunset avenue lined with warm lanterns, cherry blossom trees, and falling petals. A cute, stylized 3D cartoon boy in streetwear (hoodie, cap, joggers, and chunky sneakers) sprints from the distant horizon straight towards the screen!
+  - **Nervous Offering**: He skids to a stop right in front of the viewer, pants to catch his breath, blushes brightly, and extends a glowing folded envelope with both hands (*"H-hey! I have this for you...! 💌"*).
+  - **The Clumsy Drop**: In a moment of nervous excitement, his hands slip! He gasps in shock (*"Aahh!! Wait! Nooo! 😱"*), and the letter flutters forward aerodynamically in 3D, landing right at the front of the screen with a tactile paper drop sound and sparkle bounce.
+  - **Comical Panic Escape**: Overcome with shy embarrassment, he clasps his hands to his bright red cheeks, spins around 180°, and comically sprints away into the sunset until disappearing over the horizon!
+  - **Interactive Dropped Letter**: The letter hovers front-and-center on the screen with dynamic 3D mouse/touch parallax tilt and a pulsing golden glow.
+  - **Wax Seal Unfolding**: Clicking the letter pops the red wax heart seal with celebratory confetti and a harp chime, sliding out the parchment and smoothly dissolving into the main website!
+  - **Replay Anytime**: Includes a permanent `🏃‍♂️` button in the top navigation bar to watch the 3D delivery scene again whenever desired.
+  - **100% Procedural & Offline Capable**: Zero external 3D model downloads needed; operates at a smooth 60 FPS on both mobile and desktop with Web Audio API sound synthesis.
 
 - **Chapter 1: The Welcome Screen 💗**
   - Dreamy pastel canvas with floating hearts, twinkling stars, and gentle sparkles.
@@ -48,7 +58,7 @@ Combines elements of a romantic visual novel, a playful interactive mini-game, a
 - **🎵 Built-in Procedural Music & Sound Effects**
   - Web Audio API music-box / kalimba lullaby that plays with **zero external files or downloads required**.
   - Non-intrusive: never autoplays; easily toggled via the music button in the top navigation.
-  - Cute synthesized sound effects: soft clicks, paper unfolds, chimes, and heartbeats.
+  - Cute synthesized sound effects: soft runner footsteps, shy gasp, tactile paper drop, wax seal snaps, chimes, and heartbeats.
   - Support for your own custom MP3 file if you prefer a specific song!
 - **♿ Accessible & Responsive**
   - Works on phones, tablets, and computers.
@@ -61,7 +71,8 @@ Combines elements of a romantic visual novel, a playful interactive mini-game, a
 **No build step or Node.js required!**
 
 1. Simply double-click `index.html` in this folder to open it directly in Google Chrome, Microsoft Edge, Opera, Safari, or Firefox.
-2. Alternatively, you can serve it with any local server (e.g., VS Code *Live Server*, Python `python -m http.server`, etc.).
+2. Or open `runner-demo.html` to preview the 3D Boy delivery scene standalone.
+3. To publish to GitHub Pages, run `push-to-github.bat`.
 
 ---
 
@@ -72,7 +83,24 @@ You only need to edit **ONE file**:
 
 Open `js/storyConfig.js` in any text editor (VS Code, Notepad, etc.). Every single section has clear placeholder markers:
 
-### 1. Replace Names:
+### 1. Customize the 3D Boy Runner Scene:
+```javascript
+runner3d: {
+  enabled: true,
+  speechApproach: "H-hey! I have this for you...! 💌",
+  speechDrop: "Aahh!! Wait! Nooo! 😱",
+  speechRunAway: "I'm too embarrassed!! Bye! 🏃‍♂️💨",
+  boyOutfit: {
+    hoodieColor: "#E88BA6",  // Hoodie color
+    pantsColor: "#433248",   // Joggers color
+    shoesColor: "#FFFFFF",   // Sneakers color
+    hairColor: "#3D2B1F",    // Hair color
+    capColor: "#7B61FF",     // Cap color
+  }
+}
+```
+
+### 2. Replace Names:
 ```javascript
 recipient: {
   name: "Maya",            // Replace [CRUSH'S NAME]
@@ -84,13 +112,13 @@ sender: {
 }
 ```
 
-### 2. Personalize the Timeline & Memories:
+### 3. Personalize the Timeline & Memories:
 In `timeline.milestones` and `map.landmarks`:
 - Fill in your approximate dates or seasons.
 - Describe how you two met, your favorite conversation, or little habits you notice.
 - Replace `thoughtAtTheTime` with what was going through your mind!
 
-### 3. Add Photos (Optional):
+### 4. Add Photos (Optional):
 Drop your photos into `assets/photos/` (e.g. `photo1.jpg`).
 In `js/storyConfig.js`, set:
 ```javascript
@@ -98,43 +126,3 @@ photo: "assets/photos/photo1.jpg",
 polaroidCaption: "That day by the lake 📸"
 ```
 *(If no photo is provided, the card displays a sweet illustrated gradient fallback)*.
-
-### 4. Personalize the Letter:
-In `letter.paragraphs`:
-- Edit or add your own words to make it 100% genuine and true to your voice.
-
-### 5. Custom Background Music (Optional):
-By default, the website generates a gentle procedural music-box melody in the browser.
-If you have a special song you want to play:
-1. Save your music file as `assets/music.mp3`.
-2. In `js/storyConfig.js`, set:
-   ```javascript
-   audio: {
-     customMusicPath: "assets/music.mp3",
-   }
-   ```
-
----
-
-## 🌐 Sharing / Deploying to the Web (Free)
-
-To send a private link to your crush:
-
-### Option A: GitHub Pages (Recommended)
-1. Create a free repository on [GitHub](https://github.com).
-2. Upload the files in this folder.
-3. Go to **Settings > Pages > Branch: main > Save**.
-4. GitHub will give you a link (e.g. `https://yourusername.github.io/a-little-website-about-you/`).
-
-### Option B: Netlify or Vercel
-1. Go to [Netlify Drop](https://app.netlify.com/drop).
-2. Drag and drop this folder directly onto the page.
-3. Netlify will instantly give you a free, live web URL to share!
-
----
-
-## ❤️ Credits & Privacy
-
-- All state and quiz choices are kept strictly in the visitor's browser.
-- No analytics, cookies, tracking, or remote databases.
-- Made with care, courage, and a whole lot of heart!

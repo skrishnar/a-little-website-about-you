@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Boy Letter Runner Demo 🏃‍♂️💌</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏃‍♂️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Runner Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/runner3d.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #FED9E2;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Demo Control Panel */
+    .demo-controls-panel {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100001;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 18px 22px;
+      border-radius: 20px;
+      box-shadow: 0 16px 36px rgba(67, 50, 72, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 280px;
+    }
+
+    .demo-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #433248;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-btn {
+      background: linear-gradient(135deg, #E88BA6, #C96684);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.25s ease;
+    }
+
+    .demo-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(232, 139, 166, 0.4);
+    }
+
+    .demo-link-btn {
+      background: rgba(67, 50, 72, 0.06);
+      color: #433248;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+
+    .demo-link-btn:hover {
+      background: rgba(67, 50, 72, 0.12);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 3D Runner Overlay -->
+  <div id="runner-3d-overlay" class="runner-3d-overlay">
+    <canvas id="runner-3d-canvas"></canvas>
+    <div class="runner-vignette"></div>
+
+    <!-- Top HUD Controls -->
+    <div class="runner-hud-top">
+      <div class="runner-badge">
+        <span class="runner-badge-dot"></span>
+        <span id="runner-status-text">Someone is running towards you... 🏃‍♂️💨</span>
+      </div>
+      <div class="runner-top-actions">
+        <button class="runner-icon-btn" id="btn-runner-audio" title="Toggle audio sound effects" aria-label="Toggle sound">
+          <span id="runner-audio-icon">🔔</span>
+        </button>
+        <button class="runner-pill-btn" id="btn-runner-skip" title="Skip to story">
+          <span>Skip to Website</span>
+          <span>➔</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Comic Speech Bubble above the boy -->
+    <div id="runner-speech-bubble" class="runner-speech-bubble" style="display: none;">
+      <div class="speech-tail"></div>
+      <p id="runner-speech-text">H-hey! I have this for you...! 💌</p>
+    </div>
+
+    <!-- Bottom Interactive Prompt for the Dropped Letter -->
+    <div id="runner-letter-prompt" class="runner-letter-prompt" style="display: none;">
+      <div class="letter-prompt-card">
+        <div class="letter-prompt-icon">💌</div>
+        <h2 class="letter-prompt-title">You've Got a Letter!</h2>
+        <p class="letter-prompt-desc">He dropped it right in front of you... click the letter to open it!</p>
+        <div class="letter-prompt-actions">
+          <button class="letter-open-btn" id="btn-open-dropped-letter" aria-label="Open the dropped letter">
+            <span>✉️</span>
+            <span>Open The Letter</span>
+            <span>✨</span>
+          </button>
+          <button class="letter-replay-btn" id="btn-runner-replay" title="Replay the 3D boy running animation">
+            <span>↺ Replay delivery</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo Control Box -->
+  <div class="demo-controls-panel">
+    <div class="demo-title">
+      <span>🎬</span>
+      <span>3D Runner Showcase</span>
+    </div>
+    <button class="demo-btn" onclick="Runner3D.replay()">
+      ↺ Replay Animation
+    </button>
+    <a href="index.html" class="demo-link-btn">
+      Open Full Website ➔
+    </a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/storyConfig.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/runner3d.js"></script>
+
+</body>
+</html>
