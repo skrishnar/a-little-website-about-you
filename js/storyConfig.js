@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ==============================================================================
  * 💌 A LITTLE WEBSITE ABOUT YOU — STORY CONFIGURATION
  * ==============================================================================
@@ -29,6 +29,8 @@ const STORY_CONFIG = {
   // ---------------------------------------------------------------------------
   runner3d: {
     enabled: true,                       // Plays the 3D boy running & letter drop on open
+    characterMode: "image",              // "image" uses your cute boy illustration! ("3d" for procedural model)
+    characterImage: "assets/runner-boy-cutout.png", // Your uploaded illustrated boy
     speechApproach: "H-hey! I have this for you...! 💌",
     speechDrop: "Aahh!! Wait! Nooo! 😱",
     speechRunAway: "I'm too embarrassed!! Bye! 🏃‍♂️💨",
@@ -36,11 +38,11 @@ const STORY_CONFIG = {
     droppedLetterDesc: "He dropped it right in front of you... click the letter to open it! ✨",
     openLetterBtnText: "Open The Letter",
     boyOutfit: {
-      hoodieColor: "#E88BA6",            // Pastel rose hoodie
-      pantsColor: "#433248",             // Stylish dark plum joggers
+      hoodieColor: "#2B3E50",            // Pastel rose hoodie
+      pantsColor: "#1A1A1A",             // Stylish dark plum joggers
       shoesColor: "#FFFFFF",             // Crisp white streetwear sneakers
-      hairColor: "#3D2B1F",              // Dark brown anime styled hair
-      capColor: "#7B61FF",               // Lavender streetwear cap
+      hairColor: "#1A1A1A",              // Dark brown anime styled hair
+      capColor: "#2B3E50",               // Lavender streetwear cap
     }
   },
 
