@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔐 Owner Setup — Visitor Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0f0a14;
+      color: #e8e0f0;
+      min-height: 100vh;
+      padding: 40px 20px 80px;
+      line-height: 1.65;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(185, 164, 216, 0.15);
+      border: 1px solid rgba(185, 164, 216, 0.3);
+      border-radius: 9999px;
+      padding: 6px 18px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #B9A4D8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #E88BA6, #B9A4D8, #88C8E8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: rgba(232, 224, 240, 0.6);
+      font-size: 1rem;
+    }
+
+    /* Steps */
+    .step-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .step-number {
+      position: absolute;
+      top: -14px;
+      left: 28px;
+      background: linear-gradient(135deg, #E88BA6, #B9A4D8);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 9999px;
+    }
+
+    .step-card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      margin-top: 4px;
+    }
+
+    .step-card p {
+      color: rgba(232, 224, 240, 0.72);
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .step-card p:last-child { margin-bottom: 0; }
+
+    a {
+      color: #E88BA6;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(232, 139, 166, 0.3);
+      transition: border-color 0.2s;
+    }
+
+    a:hover { border-color: #E88BA6; }
+
+    /* Code block */
+    .code-block {
+      background: #1a1025;
+      border: 1px solid rgba(185, 164, 216, 0.2);
+      border-radius: 12px;
+      padding: 20px 22px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #c9d1d9;
+      overflow-x: auto;
+      margin: 14px 0;
+      position: relative;
+      white-space: pre;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: rgba(185, 164, 216, 0.15);
+      border: 1px solid rgba(185, 164, 216, 0.3);
+      border-radius: 8px;
+      color: #B9A4D8;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover { background: rgba(185, 164, 216, 0.28); }
+    .copy-btn.copied { color: #88C8E8; border-color: rgba(136, 200, 232, 0.4); }
+
+    /* Inline code */
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      background: rgba(185, 164, 216, 0.12);
+      border: 1px solid rgba(185, 164, 216, 0.2);
+      border-radius: 5px;
+      padding: 1px 7px;
+      color: #E88BA6;
+    }
+
+    /* URL Input */
+    .url-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .url-input {
+      flex: 1;
+      min-width: 200px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(185, 164, 216, 0.3);
+      border-radius: 10px;
+      padding: 10px 16px;
+      color: #fff;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .url-input:focus { border-color: #B9A4D8; }
+    .url-input::placeholder { color: rgba(232, 224, 240, 0.3); }
+
+    .save-btn {
+      background: linear-gradient(135deg, #E88BA6, #B9A4D8);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 10px 22px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .save-btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(185,164,216,0.3); }
+
+    .save-status {
+      display: none;
+      margin-top: 10px;
+      font-size: 0.88rem;
+      color: #88C8E8;
+      font-weight: 600;
+    }
+
+    /* Column layout hints */
+    .columns-hint {
+      background: rgba(136, 200, 232, 0.08);
+      border: 1px solid rgba(136, 200, 232, 0.2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 0.88rem;
+      color: rgba(232, 224, 240, 0.72);
+    }
+
+    .col-pill {
+      display: inline-block;
+      background: rgba(136, 200, 232, 0.12);
+      border: 1px solid rgba(136, 200, 232, 0.25);
+      border-radius: 6px;
+      padding: 2px 10px;
+      margin: 2px 3px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: #88C8E8;
+    }
+
+    /* Warning */
+    .warning {
+      background: rgba(232, 139, 166, 0.08);
+      border-left: 3px solid #E88BA6;
+      border-radius: 0 10px 10px 0;
+      padding: 12px 16px;
+      margin-top: 12px;
+      font-size: 0.88rem;
+      color: rgba(232, 224, 240, 0.65);
+    }
+
+    .success-box {
+      background: rgba(100, 220, 160, 0.08);
+      border: 1px solid rgba(100, 220, 160, 0.2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 24px;
+      text-align: center;
+      color: rgba(232, 224, 240, 0.72);
+      font-size: 0.95rem;
+    }
+
+    .success-box a {
+      color: #88C8E8;
+      border-color: rgba(136, 200, 232, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div class="header-badge">🔐 Owner Only</div>
+      <h1>Visitor Analytics Setup</h1>
+      <p class="subtitle">3 steps · ~3 minutes · completely free · invisible to your visitor</p>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step-card">
+      <span class="step-number">Step 1</span>
+      <h2>Create a Google Sheet</h2>
+      <p>Open <a href="https://sheets.google.com" target="_blank">Google Sheets</a> and create a new blank spreadsheet. Name it something like <strong>"Website Visitor Tracker"</strong>.</p>
+      <p>Leave it open — you'll need the URL in a moment.</p>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-card">
+      <span class="step-number">Step 2</span>
+      <h2>Add the Google Apps Script</h2>
+      <p>In your Google Sheet, click <strong>Extensions → Apps Script</strong>. Delete any existing code and paste this entire script:</p>
+
+      <div class="code-block" id="gas-code">// 💌 Visitor Tracker — Google Apps Script
+// Paste this in Extensions → Apps Script, then click Deploy
+
+var SHEET_NAME = "Visitor Log";
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet()
+                  .getSheetByName(SHEET_NAME);
+
+    // Create the sheet on first run
+    if (!sheet) {
+      sheet = SpreadsheetApp.getActiveSpreadsheet()
+                .insertSheet(SHEET_NAME);
+      // Header row
+      sheet.appendRow([
+        "Event", "Session ID", "Timestamp (IST)",
+        "Chapter Visited", "Chapter Name",
+        "Furthest Chapter", "Full Journey",
+        "Total Time (sec)", "Chapters Visited Count",
+        "Device", "Browser", "Timezone",
+        "Referrer", "Screen"
+      ]);
+      sheet.getRange(1, 1, 1, 14)
+        .setFontWeight("bold")
+        .setBackground("#3D2B4A")
+        .setFontColor("#FFFFFF");
+      sheet.setFrozenRows(1);
+    }
+
+    // Build row based on event type
+    var row = [
+      data.event || "",
+      data.sessionId || "",
+      data.timestamp
+        ? Utilities.formatDate(
+            new Date(data.timestamp),
+            "Asia/Kolkata",
+            "dd-MM-yyyy HH:mm:ss"
+          )
+        : "",
+      (data.chapterIndex !== undefined) ? (data.chapterIndex + 1) : "",
+      data.chapterName || "",
+      data.furthestChapterName || data.furthestChapter || "",
+      data.chapterJourney || "",
+      data.totalTimeSeconds || "",
+      data.chaptersVisited || "",
+      data.device || "",
+      data.browser || "",
+      data.timezone || "",
+      data.referrer || "",
+      data.screen || ""
+    ];
+
+    sheet.appendRow(row);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "ok" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "error", msg: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Allow GET for testing
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: "alive", msg: "Tracker is running!" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+      <button class="copy-btn" onclick="copyCode('gas-code', this)">Copy</button></div>
+
+      <p>Then click <strong>Save</strong> (Ctrl+S / ⌘S).</p>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-card">
+      <span class="step-number">Step 3</span>
+      <h2>Deploy as a Web App</h2>
+      <p>In Apps Script, click <strong>Deploy → New deployment</strong>. Configure it like this:</p>
+      <ul style="margin: 10px 0 14px 20px; color: rgba(232,224,240,0.72); font-size:0.93rem; line-height:2;">
+        <li>Type: <code>Web App</code></li>
+        <li>Execute as: <code>Me (your Google account)</code></li>
+        <li>Who has access: <code>Anyone</code></li>
+      </ul>
+      <p>Click <strong>Deploy</strong>. Copy the <strong>Web App URL</strong> it gives you (looks like <code>https://script.google.com/macros/s/ABC.../exec</code>).</p>
+
+      <div class="warning">⚠️ The URL only appears once right after deploying. Copy it before clicking Done!</div>
+
+      <p style="margin-top:14px;">Paste your URL here and click Save — it will be written directly into the tracker script:</p>
+
+      <div class="url-form">
+        <input class="url-input" id="apps-script-url" type="text"
+               placeholder="https://script.google.com/macros/s/.../exec"
+               oninput="checkUrl(this)">
+        <button class="save-btn" id="save-url-btn" onclick="saveUrl()">Save to Config →</button>
+      </div>
+      <div class="save-status" id="save-status">✅ URL saved! Open <code>js/tracker.js</code> and replace <code>YOUR_APPS_SCRIPT_URL_HERE</code> with the URL you pasted above.</div>
+    </div>
+
+    <!-- What you'll see -->
+    <div class="step-card">
+      <span class="step-number">What you'll see</span>
+      <h2>Your Google Sheet Columns</h2>
+      <div class="columns-hint">
+        <span class="col-pill">Event</span>
+        <span class="col-pill">Session ID</span>
+        <span class="col-pill">Timestamp (IST)</span>
+        <span class="col-pill">Chapter Visited</span>
+        <span class="col-pill">Chapter Name</span>
+        <span class="col-pill">Furthest Chapter</span>
+        <span class="col-pill">Full Journey</span>
+        <span class="col-pill">Total Time (sec)</span>
+        <span class="col-pill">Device</span>
+        <span class="col-pill">Browser</span>
+        <span class="col-pill">Timezone</span>
+        <span class="col-pill">Referrer</span>
+        <br><br>
+        Every time they open a new chapter → one row appears instantly.<br>
+        When they close the tab → a final <strong>session_end</strong> row logs their full journey, e.g.:<br><br>
+        <code style="font-size:0.8rem; color:#88C8E8;">Chapter 1 — Welcome (12s) → Chapter 2 — Diary (45s) → Chapter 3 — Timeline (120s)</code>
+      </div>
+    </div>
+
+    <div class="success-box">
+      🎉 Once set up, all analytics are <strong>completely invisible to your visitor</strong> and stored privately in your Google Sheet.<br><br>
+      <a href="https://sheets.google.com" target="_blank">Open Google Sheets to view your data →</a>
+    </div>
+
+  </div>
+
+  <script>
+    function copyCode(blockId, btn) {
+      var el = document.getElementById(blockId);
+      // Get text excluding the copy button
+      var text = el.innerText.replace(/^Copy$/m, '').trim();
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copied ✓';
+        btn.classList.add('copied');
+        setTimeout(function () {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2500);
+      });
+    }
+
+    function checkUrl(input) {
+      var btn = document.getElementById('save-url-btn');
+      var valid = input.value.includes('script.google.com');
+      btn.style.opacity = valid ? '1' : '0.5';
+    }
+
+    function saveUrl() {
+      var url = document.getElementById('apps-script-url').value.trim();
+      if (!url || !url.includes('script.google.com')) {
+        alert('Please paste a valid Google Apps Script URL.');
+        return;
+      }
+      // Store in localStorage for reference
+      localStorage.setItem('tracker_endpoint', url);
+      var status = document.getElementById('save-status');
+      status.style.display = 'block';
+      status.innerHTML = '✅ <strong>URL noted!</strong> Now open <code>js/tracker.js</code> and replace <code>YOUR_APPS_SCRIPT_URL_HERE</code> with:<br><br><code style="word-break:break-all; color:#88C8E8;">' + url + '</code>';
+    }
+  </script>
+</body>
+</html>
