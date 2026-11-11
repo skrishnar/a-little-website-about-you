@@ -22,7 +22,7 @@
   // ============================================================
   // 🔧 CONFIGURATION — Replace with your Apps Script URL after setup
   // ============================================================
-  var TRACKER_ENDPOINT = 'YOUR_APPS_SCRIPT_URL_HERE';
+  var TRACKER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxmcGMoP6_JNt4XX1Nbb6WkPfNeqEB1Zi5NKf99S2qlo0NhOQpZedZX9opFcmOaa5KB/exec';
 
   // Chapter names matching the site's chapter order
   var CHAPTER_NAMES = [
@@ -163,19 +163,25 @@
   function ping(payload) {
     if (!TRACKER_ENDPOINT || TRACKER_ENDPOINT === 'YOUR_APPS_SCRIPT_URL_HERE') return;
 
+    var jsonStr = JSON.stringify(payload);
+
     // Use sendBeacon for session_end (guaranteed delivery on tab close)
     if (payload.event === 'session_end' && navigator.sendBeacon) {
-      var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-      navigator.sendBeacon(TRACKER_ENDPOINT, blob);
-      return;
+      try {
+        var blob = new Blob([jsonStr], { type: 'text/plain' });
+        if (navigator.sendBeacon(TRACKER_ENDPOINT, blob)) {
+          return;
+        }
+      } catch (e) {}
     }
 
-    // Regular fetch for all other events (fire-and-forget)
+    // Regular fetch (use mode: 'no-cors' & text/plain to avoid CORS preflight blocks)
     try {
       fetch(TRACKER_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: jsonStr,
         keepalive: true
       }).catch(function () {}); // silent fail
     } catch (e) {}
