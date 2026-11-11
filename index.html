@@ -14,12 +14,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 
-  <!-- Three.js 3D Library (CDN with fallback) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/runner3d.css">
+  <link rel="stylesheet" href="css/videoIntro.css">
 </head>
 <body>
 
@@ -27,53 +24,78 @@
   <canvas id="particle-canvas"></canvas>
 
   <!-- =========================================================================
-       3D BOY LETTER RUNNER: OPENING CINEMATIC EXPERIENCE
+       🎬 VIDEO INTRO OVERLAY — Fullscreen cinematic opening
        ========================================================================= -->
-  <div id="runner-3d-overlay" class="runner-3d-overlay" role="region" aria-label="3D Letter Delivery Intro">
-    <canvas id="runner-3d-canvas"></canvas>
-    <div class="runner-vignette"></div>
+  <div id="video-intro-overlay" role="region" aria-label="Opening video intro">
 
-    <!-- Top HUD Controls -->
-    <div class="runner-hud-top">
-      <div class="runner-badge">
-        <span class="runner-badge-dot"></span>
-        <span id="runner-status-text">Someone is running towards you... 🏃‍♂️💨</span>
+    <!-- The video itself -->
+    <video
+      id="intro-video"
+      src="assets/runner-intro.mp4"
+      playsinline
+      muted
+      preload="auto"
+      aria-label="Animated intro: a boy running to deliver a letter"
+    ></video>
+
+    <!-- Cinematic vignette -->
+    <div class="vi-vignette"></div>
+
+    <!-- Decorative floating sparkles -->
+    <span class="vi-sparkle" style="left:8%;  top:20%; animation-delay:0s;">✨</span>
+    <span class="vi-sparkle" style="left:88%; top:35%; animation-delay:1.2s;">🌸</span>
+    <span class="vi-sparkle" style="left:15%; top:70%; animation-delay:2.1s;">⭐</span>
+    <span class="vi-sparkle" style="left:75%; top:65%; animation-delay:0.7s;">✨</span>
+    <span class="vi-sparkle" style="left:50%; top:12%; animation-delay:1.8s;">💫</span>
+
+    <!-- Top HUD -->
+    <div class="vi-hud-top">
+      <div class="vi-badge">
+        <span class="vi-badge-dot"></span>
+        <span>Someone's on their way to you… 🏃‍♂️💨</span>
       </div>
-      <div class="runner-top-actions">
-        <button class="runner-icon-btn" id="btn-runner-audio" title="Toggle audio sound effects" aria-label="Toggle sound">
-          <span id="runner-audio-icon">🔔</span>
-        </button>
-        <button class="runner-pill-btn" id="btn-runner-skip" title="Skip to story">
-          <span>Skip to Website</span>
+      <div class="vi-top-actions">
+        <button class="vi-icon-btn" id="btn-vi-replay" title="Replay from the beginning" aria-label="Replay intro">↺</button>
+        <button class="vi-icon-btn" id="btn-vi-sound" title="Toggle sound" aria-label="Toggle sound">🔇</button>
+        <button class="vi-skip-btn" id="btn-vi-skip" aria-label="Skip intro">
+          <span>Skip intro</span>
           <span>➔</span>
         </button>
       </div>
     </div>
 
-    <!-- Comic Speech Bubble above the boy -->
-    <div id="runner-speech-bubble" class="runner-speech-bubble" style="display: none;">
-      <div class="speech-tail"></div>
-      <p id="runner-speech-text">H-hey! I have this for you...! 💌</p>
+    <!-- Progress bar (bottom) -->
+    <div class="vi-progress-wrap" id="vi-progress-bar-wrap">
+      <div id="vi-progress-bar">
+        <div id="vi-progress-fill"></div>
+      </div>
+      <span id="vi-time-label"></span>
     </div>
 
-    <!-- Bottom Interactive Prompt for the Dropped Letter -->
-    <div id="runner-letter-prompt" class="runner-letter-prompt" style="display: none;">
-      <div class="letter-prompt-card">
-        <div class="letter-prompt-icon">💌</div>
-        <h2 class="letter-prompt-title">You've Got a Letter!</h2>
-        <p class="letter-prompt-desc">He dropped it right in front of you... click the letter to open it!</p>
-        <div class="letter-prompt-actions">
-          <button class="letter-open-btn" id="btn-open-dropped-letter" aria-label="Open the dropped letter">
-            <span>✉️</span>
-            <span>Open The Letter</span>
-            <span>✨</span>
-          </button>
-          <button class="letter-replay-btn" id="btn-runner-replay" title="Replay the 3D boy running animation">
-            <span>↺ Replay delivery</span>
-          </button>
-        </div>
-      </div>
+    <!-- Play hint (shown if autoplay is blocked) -->
+    <div id="vi-play-hint" aria-label="Tap to play">
+      <div class="vi-play-circle">▶</div>
+      <span class="vi-play-hint-text">Tap anywhere to begin</span>
     </div>
+
+    <!-- Letter Card (revealed when video ends) -->
+    <div id="vi-letter-card" class="vi-card-hidden" role="dialog" aria-modal="false" aria-label="Open the dropped letter">
+      <div class="vi-card-backdrop"></div>
+      <div class="vi-letter-inner">
+        <span class="vi-letter-seal">💌</span>
+        <h2 class="vi-letter-title">He dropped it… for you</h2>
+        <p class="vi-letter-desc">He ran all this way just to leave you something. It landed right at your feet. Maybe you should open it?</p>
+        <button class="vi-open-btn" id="btn-vi-open-letter">
+          <span>✉️</span>
+          <span>Open the Letter</span>
+          <span>✨</span>
+        </button>
+      </div>
+      <button class="vi-replay-nudge" id="btn-vi-replay-nudge" onclick="document.getElementById('btn-vi-replay').click()" aria-label="Watch the intro again">
+        ↺ Watch again
+      </button>
+    </div>
+
   </div>
 
   <!-- =========================================================================
@@ -447,11 +469,11 @@
     <span id="toast-message">Secret message unlocked!</span>
   </div>
 
-  <!-- Scripts: Config -> Audio -> Particles -> 3D Runner -> App -->
+  <!-- Scripts: Config → Audio → Particles → Video Intro → App -->
   <script src="js/storyConfig.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
-  <script src="js/runner3d.js"></script>
+  <script src="js/videoIntro.js"></script>
   <script src="js/app.js"></script>
 
 </body>

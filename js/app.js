@@ -897,6 +897,16 @@
       });
     }
 
+    // Nav replay-boy button -> replay video intro
+    var btnReplayBoy = document.getElementById('btn-replay-boy');
+    if (btnReplayBoy) {
+      btnReplayBoy.addEventListener('click', function() {
+        var ovl = document.getElementById('video-intro-overlay');
+        if (ovl) { ovl.style.display = ''; ovl.classList.remove('vi-hidden', 'vi-fade-out'); }
+        if (window.VideoIntro) window.VideoIntro.replay();
+      });
+    }
+
     // Global keyboard shortcuts (M: Music, S: SFX)
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -933,9 +943,19 @@
     initModalEvents();
     initControls();
 
-    // Expose global app API for external controls (like 3D Runner)
+    // Expose global app API for external controls
     window.app = {
       goToChapter: goToChapter,
+
+      // Called by videoIntro.js when the user opens the letter / skips
+      onVideoIntroDone: function() {
+        if (window.particleEngine) {
+          window.particleEngine.burstConfetti(window.innerWidth / 2, window.innerHeight / 2, 55);
+        }
+        goToChapter(0);
+      },
+
+      // Legacy compat – kept in case anything references it
       onLetterOpenedFromRunner: function() {
         var envelopeBox = document.getElementById('welcome-envelope-box');
         var openEnvelopeBtn = document.getElementById('btn-open-envelope');
